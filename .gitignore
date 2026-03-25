@@ -1,0 +1,34 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Tool outputs (screenshots, HTML, JSON, CSV runs)
+output/
+
+# Environment & secrets
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs (optional local settings)
+.idea/
+*.swp
+*.swo
+
+# Playwright (if you add tests later)
+test-results/
+playwright-report/
+playwright/.cache/
