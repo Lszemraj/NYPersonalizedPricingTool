@@ -45,7 +45,28 @@ python main.py --urls https://example.com/item --output-dir ./output
 python main.py --url-file urls.txt --output-dir ./output
 ```
 
-**If you pass neither `--urls` nor `--url-file`**, the script uses a single placeholder URL (`https://example.com/product/1`) so the pipeline can be smoke-tested—replace with real targets for research.
+**Built-in platform registry (default):** If you pass **neither** `--urls` nor `--url-file`, the tool loads the structured registry in **`site_registry.py`** (food delivery, grocery/retail, travel/flights, ticketing). By default it runs **first-wave pilot** platforms only (`--all-enabled` expands to every enabled entry). Each platform can list multiple **target URLs** (e.g. homepage + a generic search path); every URL is visited **once per persona**.
+
+The auditor runs a **bounded, category-aware exploration** (ranked clicks toward cart/checkout/search—never payment submit) and records stages, paths, disclosure matches (including optional “near” keyword matches), pricing-state confidence, and gate hints (login/address). Use `--max-depth` to cap steps, `--use-test-address` to try a test ZIP in visible postal fields, `--use-storage-state` for a saved Playwright cookie file, and `--continue-after-disclosure` to keep exploring after disclosure text is found.
+
+```bash
+# Pilot registry only (default registry mode)
+python main.py --output-dir ./output
+
+# All enabled platforms in the registry
+python main.py --all-enabled --output-dir ./output
+
+# Travel / lodging category only (slug or alias, e.g. travel)
+python main.py --category travel_lodging
+
+# Named platforms only (repeatable; case-insensitive)
+python main.py --platform Uber --platform Lyft
+
+# Print registry without scraping
+python main.py --list-registry
+```
+
+Registry filters (`--category`, `--platform`, `--all-enabled`, `--include-disabled`) are **ignored** when you use `--urls` or `--url-file` (a warning is logged).
 
 ### Useful options
 
@@ -90,7 +111,9 @@ Optional: `PersonaConfig.storage_state_path` can point to a Playwright **storage
 
 ## Reading the CSV (high level)
 
-Key columns partners usually care about:
+Registry runs include **`platform_name`**, **`category`**, **`homepage_url`**, **`target_url`** (page audited), **`pilot_priority`**, **`requires_login`**, **`likely_price_page_type`**, plus **`url`** (same as `target_url` for compatibility). Full research notes for each platform are in the per-row **JSON** (`platform_notes`).
+
+Key disclosure columns:
 
 - **`disclosure_found_exact` / `disclosure_found_normalized`** — statutory string vs. normalized match.
 - **`disclosure_visible`** — whether the matched element intersects the viewport.
