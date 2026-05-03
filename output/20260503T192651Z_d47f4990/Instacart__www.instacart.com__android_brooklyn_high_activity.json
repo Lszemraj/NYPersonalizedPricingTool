@@ -1,0 +1,152 @@
+{
+  "run_id": "20260503T192651Z_d47f4990",
+  "timestamp": "2026-05-03T19:27:21.456698+00:00",
+  "url": "https://www.instacart.com",
+  "target_url": "https://www.instacart.com",
+  "platform_name": "Instacart",
+  "category": "Grocery / retail",
+  "homepage_url": "https://www.instacart.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "pdp | cart | checkout",
+  "platform_notes": "Delivery address gate; fees at checkout.",
+  "persona_name": "android_brooklyn_high_activity",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$0",
+  "num_price_candidates": 5,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\Instacart__www.instacart.com__android_brooklyn_high_activity.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\Instacart__www.instacart.com__android_brooklyn_high_activity.html",
+  "json_path": null,
+  "error": "Locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for get_by_role(\"button\", name=re.compile(r\"Cart\", re.IGNORECASE)).first\n    - locator resolved to <button class=\"e-1vx61h9\" aria-expanded=\"false\" aria-controls=\"faq-how-does-instacart-delivery-and-curbside-pickup-work-\">…</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"e-1b9qy01\" data-testid=\"background\">…</div> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <span class=\"e-192njgr\">Continue in browser</span> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"e-1b9qy01\" data-testid=\"background\">…</div> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  2 × retrying click action\n      - waiting 100ms\n      - waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <img class=\"e-8atqhb\" alt=\"Instacart logo\" src=\"https://www.instacart.com/assets/beetstrap/brand/2022/instacart-logo-color-6678cb82d531f8910d5ba270a11a7e9b56fc261371bda42ea7a5abeff3492e1c.svg\"/> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <span class=\"e-192njgr\">Continue in browser</span> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"e-1b9qy01\" data-testid=\"background\">…</div> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  2 × retrying click action\n      - waiting 500ms\n      - waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <img class=\"e-8atqhb\" alt=\"Instacart logo\" src=\"https://www.instacart.com/assets/beetstrap/brand/2022/instacart-logo-color-6678cb82d531f8910d5ba270a11a7e9b56fc261371bda42ea7a5abeff3492e1c.svg\"/> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <span class=\"e-192njgr\">Continue in browser</span> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - <div class=\"e-1b9qy01\" data-testid=\"background\">…</div> from <div role=\"dialog\" class=\"e-8ebdgo\" aria-modal=\"true\" aria-labelledby=\"interstitial\" id=\"native-app-upsell-interstitial\">…</div> subtree intercepts pointer events\n  - retrying click action\n    - waiting 500ms\n",
+  "prices": [
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.e-7ecn3l | 5 stars on 1,000,000+ reviews\nFast delivery and fresh selection from stores you love\n$0 delivery fees on your first 3 or"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "span.e-1o5spyx | $0 delivery fees on your first 3 orders.\nService fees and terms apply."
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.e-1jb18bj | Order groceries for delivery or pickup today\nSign up to get $0 delivery fee*\n*Valid for first 3 orders. Service fees and"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.e-1n6skzz | Order groceries for delivery or pickup today\nSign up to get $0 delivery fee*\n*Valid for first 3 orders. Service fees and"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "button.e-gioimx | Sign up to get $0 delivery fee*"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "cart",
+  "click_depth": 0,
+  "path_taken": [
+    "https://www.instacart.com"
+  ],
+  "selectors_clicked": [],
+  "pricing_state_confidence": 1.0,
+  "likely_price_page_type_detected": "cart",
+  "price_found": true,
+  "fee_candidates": [
+    "$0 delivery fees on your first 3 orders.",
+    "sign up to get $0 delivery fee*",
+    "terms for $0 delivery fee (first order): offer valid on first order made through instacart with a minimum basket size as set forth in the offer promotion. offer expires on the date indicated in the us"
+  ],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "navigation_failure",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.instacart.com/",
+      "page_stage": "cart",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 5,
+      "pricing_state_confidence": 1.0,
+      "likely_price_page_type_detected": "cart",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "android_mobile",
+  "account_state": "high_activity",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}

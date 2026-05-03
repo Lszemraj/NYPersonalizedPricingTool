@@ -1,0 +1,262 @@
+{
+  "run_id": "20260503T194548Z_9df2ac0c",
+  "timestamp": "2026-05-03T19:47:03.252679+00:00",
+  "url": "https://www.amazon.com",
+  "target_url": "https://www.amazon.com",
+  "platform_name": "Amazon",
+  "category": "Grocery / retail",
+  "homepage_url": "https://www.amazon.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "search | pdp | cart | checkout",
+  "platform_notes": "Buy Box; many dynamic promos; heavy SPA.",
+  "persona_name": "desktop_nyc_city_hall_fresh",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$10",
+  "num_price_candidates": 21,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Amazon__www.amazon.com__desktop_nyc_city_hall_fresh.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Amazon__www.amazon.com__desktop_nyc_city_hall_fresh.html",
+  "json_path": null,
+  "error": null,
+  "prices": [
+    {
+      "value": 10,
+      "currency_hint": "USD",
+      "raw_text": "$10",
+      "dom_context": "option | Under $10"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "div#desktop-btf-grid-2 | Mother’s Day gifts by price\nUnder $20\nUnder $50\nUnder $100\nDeals\nShop all\nShop all"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "div#CardInstanceGwU5dsvhn0tmrjr92u4VeA | Mother’s Day gifts by price\nUnder $20\nUnder $50\nUnder $100\nDeals\nShop all\nShop all"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "div._Zmx1a_fluidQuadImageLabelBody_3tld0 | Under $20\nUnder $50\nUnder $100\nDeals"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "div.a-section | Under $20\nUnder $50"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "a.a-link-normal | Under $20"
+    },
+    {
+      "value": 20,
+      "currency_hint": "USD",
+      "raw_text": "$20",
+      "dom_context": "span.a-size-small | Under $20"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "a.a-link-normal | Under $50"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "span.a-size-small | Under $50"
+    },
+    {
+      "value": 100,
+      "currency_hint": "USD",
+      "raw_text": "$100",
+      "dom_context": "div.a-section | Under $100"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "div#desktop-btf-grid-4 | Explore premium by price\nUnder $50\nUnder $100\nUnder $150\nUnder $200\nShop more elevated brands\nShop more elevated brands"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "div#CardInstance5WLxTgFkzzYWKhNsZ_-_mA | Explore premium by price\nUnder $50\nUnder $100\nUnder $150\nUnder $200\nShop more elevated brands\nShop more elevated brands"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "div._Zmx1a_fluidQuadImageLabelBody_3tld0 | Under $50\nUnder $100\nUnder $150\nUnder $200"
+    },
+    {
+      "value": 50,
+      "currency_hint": "USD",
+      "raw_text": "$50",
+      "dom_context": "div.a-section | Under $50\nUnder $100"
+    },
+    {
+      "value": 100,
+      "currency_hint": "USD",
+      "raw_text": "$100",
+      "dom_context": "a.a-link-normal | Under $100"
+    },
+    {
+      "value": 100,
+      "currency_hint": "USD",
+      "raw_text": "$100",
+      "dom_context": "span.a-size-small | Under $100"
+    },
+    {
+      "value": 150,
+      "currency_hint": "USD",
+      "raw_text": "$150",
+      "dom_context": "div.a-section | Under $150\nUnder $200"
+    },
+    {
+      "value": 150,
+      "currency_hint": "USD",
+      "raw_text": "$150",
+      "dom_context": "a.a-link-normal | Under $150"
+    },
+    {
+      "value": 150,
+      "currency_hint": "USD",
+      "raw_text": "$150",
+      "dom_context": "span.a-size-small | Under $150"
+    },
+    {
+      "value": 200,
+      "currency_hint": "USD",
+      "raw_text": "$200",
+      "dom_context": "a.a-link-normal | Under $200"
+    },
+    {
+      "value": 200,
+      "currency_hint": "USD",
+      "raw_text": "$200",
+      "dom_context": "span.a-size-small | Under $200"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "homepage_or_content",
+  "click_depth": 1,
+  "path_taken": [
+    "https://www.amazon.com",
+    "https://www.amazon.com/"
+  ],
+  "selectors_clicked": [
+    "btn:Continue:Continue shopping"
+  ],
+  "pricing_state_confidence": 0.7,
+  "likely_price_page_type_detected": "other",
+  "price_found": true,
+  "fee_candidates": [],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "strong_pricing_state",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.amazon.com/",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 0,
+      "pricing_state_confidence": 0.1,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    },
+    {
+      "depth": 1,
+      "url": "https://www.amazon.com/",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 21,
+      "pricing_state_confidence": 0.7,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "web_desktop",
+  "account_state": "fresh",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}

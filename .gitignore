@@ -12,9 +12,6 @@ __pycache__/
 dist/
 build/
 
-# Tool outputs (screenshots, HTML, JSON, CSV runs)
-output/
-
 # Environment & secrets
 .env
 .env.*
