@@ -25,6 +25,16 @@ CATEGORY_LABELS: dict[str, str] = {
 
 
 @dataclass(frozen=True)
+class TargetItem:
+    item_id: str
+    item_label: str
+    item_category: str
+    target_url: str
+    intended_page_type: str
+    notes: str = ""
+
+
+@dataclass(frozen=True)
 class SiteProfile:
     platform_name: str
     category: str
@@ -41,6 +51,7 @@ class SiteProfile:
     notes: str
     enabled: bool
     pilot_priority: bool
+    target_items: tuple[TargetItem, ...] = ()
 
 
 def _sp(
@@ -50,6 +61,7 @@ def _sp(
     home: str,
     targets: tuple[str, ...],
     *,
+    target_items: tuple[TargetItem, ...] = (),
     pilot: bool,
     entry: tuple[str, ...] = ("homepage",),
     price_types: str = "homepage",
@@ -67,6 +79,7 @@ def _sp(
         strategy_kind=strat,
         homepage_url=home,
         target_urls=targets,
+        target_items=target_items,
         likely_entry_points=entry,
         likely_price_page_types=price_types,
         requires_login=login,

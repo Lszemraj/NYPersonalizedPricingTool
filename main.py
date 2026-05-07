@@ -18,7 +18,6 @@ import csv
 import json
 import logging
 import re
-import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -53,6 +52,7 @@ INTERACTION_DELAY_SEC = 0.35  # ethics / rate smoothing; not anti-bot evasion
 
 StrategyKind = Literal["food_delivery", "grocery_retail", "travel", "ticketing", "generic"]
 AccountState = Literal["fresh", "returning", "high_activity"]
+DeviceType = Literal["desktop_browser", "iphone_mobile", "android_mobile"]
 # ---------------------------------------------------------------------------
 # Configuration models
 # ---------------------------------------------------------------------------
@@ -84,12 +84,24 @@ class PersonaConfig:
     storage_state_path: Path | None = None
     persona_group: str = "unspecified"
     account_state: str = "fresh"
+    device_type: str = ""
+    location_name: str = ""
+    location_rationale: str = ""
+    browser_geolocation_lat: float | None = None
+    browser_geolocation_lon: float | None = None
+    persona_id: str = ""
 
     def __post_init__(self) -> None:
         if not self.name.strip():
             raise ValueError("persona name must be non-empty")
         if self.account_state not in ("fresh", "returning", "high_activity"):
             raise ValueError("account_state must be fresh, returning, or high_activity")
+        geo_lat = self.geolocation.latitude if self.geolocation else None
+        geo_lon = self.geolocation.longitude if self.geolocation else None
+        if self.browser_geolocation_lat is not None and geo_lat is not None and self.browser_geolocation_lat != geo_lat:
+            raise ValueError("browser_geolocation_lat must match geolocation.latitude when both are set")
+        if self.browser_geolocation_lon is not None and geo_lon is not None and self.browser_geolocation_lon != geo_lon:
+            raise ValueError("browser_geolocation_lon must match geolocation.longitude when both are set")
 
 
 def load_personas_from_json(path: Path, log: logging.Logger | None = None) -> list[PersonaConfig]:
@@ -97,7 +109,8 @@ def load_personas_from_json(path: Path, log: logging.Logger | None = None) -> li
     Load persona definitions from a JSON array file.
 
     Each entry supports: name, user_agent, locale, timezone, geolocation {latitude, longitude},
-    storage_state_path (optional string path), persona_group, account_state.
+    storage_state_path (optional string path), persona_group, account_state, device_type,
+    location_name, location_rationale, browser_geolocation_lat, browser_geolocation_lon, persona_id.
     YAML is not loaded here to avoid extra dependencies—convert YAML to JSON if needed.
     """
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -122,6 +135,20 @@ def load_personas_from_json(path: Path, log: logging.Logger | None = None) -> li
             storage_state_path=pssp,
             persona_group=str(row.get("persona_group", "unspecified")),
             account_state=str(row.get("account_state", "fresh")),
+            device_type=str(row.get("device_type", "")),
+            location_name=str(row.get("location_name", "")),
+            location_rationale=str(row.get("location_rationale", "")),
+            browser_geolocation_lat=(
+                float(row["browser_geolocation_lat"])
+                if row.get("browser_geolocation_lat") is not None
+                else (gloc.latitude if gloc else None)
+            ),
+            browser_geolocation_lon=(
+                float(row["browser_geolocation_lon"])
+                if row.get("browser_geolocation_lon") is not None
+                else (gloc.longitude if gloc else None)
+            ),
+            persona_id=str(row.get("persona_id", row.get("name", ""))),
         )
         out.append(persona)
         if log:
@@ -136,6 +163,7 @@ from site_registry import (
     SITE_REGISTRY,
     SiteProfile,
     StrategyKind,
+    TargetItem,
     normalize_category_filter as _normalize_category_filter,
 )
 
@@ -146,6 +174,13 @@ class AuditTarget:
 
     url: str
     platform: SiteProfile | None
+    item_id: str = ""
+    item_label: str = ""
+    item_category: str = ""
+    item_index: int = 1
+    items_per_site_requested: int = 1
+    intended_page_type: str = "unknown"
+    item_notes: str = ""
 
 
 @dataclass
@@ -166,6 +201,48 @@ class AuditConfig:
     test_zip: str = DEFAULT_TEST_ZIP
     continue_after_disclosure: bool = False
     global_storage_state: Path | None = None
+    run_label: str = "registry"
+    run_id: str = ""
+    proxy_server: str | None = None
+    proxy_label: str | None = None
+    proxy_location: str | None = None
+    proxy_scope: str = "none"
+
+
+def _sanitize_run_label(label: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "-", (label or "").strip().lower())
+    cleaned = cleaned.strip("-._")
+    return cleaned or "run"
+
+
+def _build_run_id(base_output_dir: Path, run_label: str) -> str:
+    stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    base = f"{stamp}_{_sanitize_run_label(run_label)}"
+    candidate = base
+    idx = 2
+    while (base_output_dir / candidate).exists():
+        candidate = f"{base}_{idx:02d}"
+        idx += 1
+    return candidate
+
+
+def _target_items_for_platform(platform: SiteProfile, items_per_site: int) -> list[TargetItem]:
+    if platform.target_items:
+        items = list(platform.target_items)
+    else:
+        items = [
+            TargetItem(
+                item_id=f"url_{i}",
+                item_label=f"URL {i}",
+                item_category=platform.category_slug,
+                target_url=u,
+                intended_page_type="unknown",
+                notes="Auto-generated from target_urls because no explicit target_items were configured.",
+            )
+            for i, u in enumerate(platform.target_urls, start=1)
+        ]
+    n = max(1, items_per_site)
+    return items[:n]
 
 
 # Registry data lives in site_registry.py for maintainability.
@@ -176,6 +253,7 @@ def expand_registry_to_audit_targets(
     enabled_only: bool,
     categories: frozenset[str] | None,
     platform_names: frozenset[str] | None,
+    items_per_site: int,
 ) -> list[AuditTarget]:
     """Flatten registry to one AuditTarget per (platform, target URL)."""
     out: list[AuditTarget] = []
@@ -189,13 +267,40 @@ def expand_registry_to_audit_targets(
         if platform_names is not None:
             if p.platform_name.strip().casefold() not in platform_names:
                 continue
-        for u in p.target_urls:
-            out.append(AuditTarget(url=u, platform=p))
+        selected_items = _target_items_for_platform(p, items_per_site)
+        for idx, item in enumerate(selected_items, start=1):
+            out.append(
+                AuditTarget(
+                    url=item.target_url,
+                    platform=p,
+                    item_id=item.item_id,
+                    item_label=item.item_label,
+                    item_category=item.item_category,
+                    item_index=idx,
+                    items_per_site_requested=max(1, items_per_site),
+                    intended_page_type=item.intended_page_type,
+                    item_notes=item.notes,
+                )
+            )
     return out
 
 
-def manual_audit_targets(urls: list[str]) -> list[AuditTarget]:
-    return [AuditTarget(url=u, platform=None) for u in urls]
+def manual_audit_targets(urls: list[str], items_per_site: int) -> list[AuditTarget]:
+    n = max(1, items_per_site)
+    return [
+        AuditTarget(
+            url=u,
+            platform=None,
+            item_id=f"manual_url_{i}",
+            item_label=f"Manual URL {i}",
+            item_category="manual",
+            item_index=i,
+            items_per_site_requested=n,
+            intended_page_type="manual",
+            item_notes="Manual URL input",
+        )
+        for i, u in enumerate(urls, start=1)
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -363,6 +468,7 @@ class PageRunResult:
     """Single URL × persona audit record (flattened fields for CSV/JSON)."""
 
     run_id: str
+    run_label: str
     timestamp_iso: str
     url: str
     target_url: str
@@ -373,7 +479,32 @@ class PageRunResult:
     requires_login: bool
     likely_price_page_type: str
     platform_notes: str
+    item_id: str
+    item_label: str
+    item_category: str
+    item_index: int
+    items_per_site_requested: int
+    intended_page_type: str
     persona_name: str
+    device_type: str
+    location_name: str
+    location_rationale: str
+    browser_geolocation_lat: float | None
+    browser_geolocation_lon: float | None
+    geolocation_permission_granted: bool
+    ip_proxy_used: bool
+    proxy_server_label_or_host: str
+    proxy_scope: str
+    location_simulation_notes: str
+    test_zip_value: str
+    test_zip_entered: bool
+    test_address_entered: bool
+    location_prompt_detected: bool
+    address_gate_unresolved: bool
+    proxy_location: str
+    location_signal_alignment: str
+    location_validation_notes: str
+    location_simulation_level: str
     disclosure_found_exact: bool
     disclosure_found_normalized: bool
     disclosure_visible: bool
@@ -1286,6 +1417,28 @@ async def _try_fill_test_zip(page: Page, zip_code: str, log: logging.Logger) -> 
     return False
 
 
+async def _try_fill_test_address(page: Page, address_text: str, log: logging.Logger) -> bool:
+    selectors = [
+        'input[placeholder*="address" i]',
+        'input[name*="address" i]',
+        'input[id*="address" i]',
+        'input[autocomplete="street-address"]',
+    ]
+    for sel in selectors:
+        try:
+            loc = page.locator(sel).first
+            if await loc.count() == 0:
+                continue
+            if await loc.is_visible(timeout=600):
+                await loc.fill(address_text)
+                log.info("Filled test address in %s", sel)
+                await asyncio.sleep(max(INTERACTION_DELAY_SEC, 0.35))
+                return True
+        except PlaywrightError:
+            continue
+    return False
+
+
 def _better_disclosure(
     a: DisclosureEvaluation | None, b: DisclosureEvaluation
 ) -> DisclosureEvaluation:
@@ -1345,6 +1498,7 @@ async def guided_exploration_loop(
     site: SiteProfile | None,
     cfg: AuditConfig,
     log: logging.Logger,
+    test_zip_value: str,
 ) -> dict[str, Any]:
     """
     Multi-step bounded navigation toward pricing-relevant surfaces. Does not submit payment.
@@ -1370,6 +1524,8 @@ async def guided_exploration_loop(
     blocked_login = False
     blocked_addr = False
     used_zip = False
+    used_address = False
+    location_prompt_detected = False
     err: str | None = None
 
     try:
@@ -1393,9 +1549,13 @@ async def guided_exploration_loop(
 
             blocked_login = blocked_login or bool(gates.get("login_wall"))
             blocked_addr = blocked_addr or bool(gates.get("address_gate"))
+            location_prompt_detected = location_prompt_detected or bool(gates.get("address_gate"))
 
             if cfg.use_test_address and site and (site.address_required or gates.get("address_gate")):
-                used_zip = used_zip or await _try_fill_test_zip(page, cfg.test_zip, log)
+                used_zip = used_zip or await _try_fill_test_zip(page, test_zip_value, log)
+                used_address = used_address or await _try_fill_test_address(
+                    page, "100 Main St, New York, NY", log
+                )
 
             stages.append(
                 {
@@ -1502,7 +1662,10 @@ async def guided_exploration_loop(
         "clicks_to_disclosure": first_disc_depth,
         "blocked_by_login": blocked_login,
         "blocked_by_address_gate": blocked_addr,
-        "used_test_address": used_zip,
+        "used_test_address": (used_zip or used_address),
+        "test_zip_entered": used_zip,
+        "test_address_entered": used_address,
+        "location_prompt_detected": location_prompt_detected,
         "error": err,
         "pricing_breakdown": merged_pb,
         "disclosure_visible_without_interaction": disclosure_visible_without_interaction,
@@ -1542,6 +1705,84 @@ def _platform_row_fields(platform: SiteProfile | None) -> dict[str, Any]:
     }
 
 
+def _proxy_label_or_host(proxy_server: str | None, proxy_label: str | None) -> str:
+    if proxy_label:
+        return proxy_label
+    if not proxy_server:
+        return ""
+    parsed = urlparse(proxy_server)
+    return parsed.netloc or parsed.path or proxy_server
+
+
+def _location_simulation_notes(ip_proxy_used: bool) -> str:
+    if ip_proxy_used:
+        return (
+            "Browser geolocation was simulated through Playwright and IP routing was configured via proxy. "
+            "Location signals may still vary by site policy, account state, and other gating factors."
+        )
+    return (
+        "Browser geolocation was simulated through Playwright. IP-based location was not changed unless "
+        "ip_proxy_used=True."
+    )
+
+
+def _test_zip_for_persona(persona: PersonaConfig, fallback: str) -> str:
+    return LOCATION_TEST_ZIPS.get((persona.location_name or "").strip(), fallback)
+
+
+def validate_location_signals(
+    *,
+    persona: PersonaConfig,
+    proxy_location: str,
+    ip_proxy_used: bool,
+    geolocation_set: bool,
+    test_zip_value: str,
+    test_zip_entered: bool,
+    test_address_entered: bool,
+) -> tuple[str, str, str]:
+    location_name = (persona.location_name or "").strip()
+    proxy_loc = (proxy_location or "").strip()
+    has_service_location = bool(test_zip_entered or test_address_entered)
+    expected_zip = LOCATION_TEST_ZIPS.get(location_name, "")
+    zip_mismatch = bool(test_zip_entered and expected_zip and test_zip_value and test_zip_value != expected_zip)
+    proxy_mismatch = bool(ip_proxy_used and proxy_loc and location_name and proxy_loc != location_name)
+    if proxy_mismatch or zip_mismatch:
+        return (
+            "mismatch",
+            "incomplete_or_unknown",
+            "Location signals conflict across persona, proxy, or entered service ZIP/address.",
+        )
+    if geolocation_set and ip_proxy_used and proxy_loc == location_name and has_service_location:
+        return (
+            "browser_geo_plus_proxy_plus_zip",
+            "browser_geolocation_plus_proxy_plus_service_location",
+            "Browser geolocation, proxy location metadata, and service location entry are aligned.",
+        )
+    if geolocation_set and ip_proxy_used and proxy_loc == location_name and not has_service_location:
+        return (
+            "browser_geo_plus_proxy",
+            "browser_geolocation_plus_proxy",
+            "Browser geolocation is aligned with proxy metadata; no service ZIP/address entry was confirmed.",
+        )
+    if geolocation_set and not ip_proxy_used and has_service_location:
+        return (
+            "browser_geo_plus_zip",
+            "browser_geolocation_plus_service_location",
+            "Browser geolocation was set and a service ZIP/address entry was confirmed.",
+        )
+    if geolocation_set and not ip_proxy_used and not has_service_location:
+        return (
+            "browser_geo_only",
+            "browser_geolocation_simulation",
+            "Browser geolocation was set without matching service ZIP/address entry or proxy alignment.",
+        )
+    return (
+        "unknown",
+        "incomplete_or_unknown",
+        "Insufficient location metadata to classify alignment confidently.",
+    )
+
+
 def _surface_flags_from_candidate(bc: DisclosureCandidate | None) -> tuple[bool, bool, bool, bool]:
     """
     Derive placement buckets from JS surface classification (not fixed selectors).
@@ -1560,16 +1801,14 @@ def _surface_flags_from_candidate(bc: DisclosureCandidate | None) -> tuple[bool,
 def make_error_result(
     *,
     run_id: str,
-    url: str,
-    target_url: str,
+    target: AuditTarget,
     persona: PersonaConfig,
-    platform: SiteProfile | None,
     cfg: AuditConfig,
     error_msg: str,
 ) -> PageRunResult:
     """Minimal PageRunResult when a task fails before/with an unrecoverable audit error."""
     ts = datetime.now(timezone.utc).isoformat()
-    pf = _platform_row_fields(platform)
+    pf = _platform_row_fields(target.platform)
     storage_used = bool(
         cfg.global_storage_state and cfg.global_storage_state.is_file()
     ) or bool(persona.storage_state_path and persona.storage_state_path.is_file())
@@ -1583,11 +1822,22 @@ def make_error_result(
         best_candidate=None,
         all_candidates=[],
     )
+    test_zip_value = _test_zip_for_persona(persona, cfg.test_zip)
+    alignment, sim_level, validation_notes = validate_location_signals(
+        persona=persona,
+        proxy_location=cfg.proxy_location or "",
+        ip_proxy_used=bool(cfg.proxy_server),
+        geolocation_set=bool(persona.geolocation),
+        test_zip_value=test_zip_value,
+        test_zip_entered=False,
+        test_address_entered=False,
+    )
     return PageRunResult(
         run_id=run_id,
+        run_label=cfg.run_label,
         timestamp_iso=ts,
-        url=url,
-        target_url=target_url,
+        url=target.url,
+        target_url=target.url,
         platform_name=pf["platform_name"],
         category=pf["category"],
         homepage_url=pf["homepage_url"],
@@ -1595,7 +1845,32 @@ def make_error_result(
         requires_login=pf["requires_login"],
         likely_price_page_type=pf["likely_price_page_type"],
         platform_notes=pf["platform_notes"],
+        item_id=target.item_id,
+        item_label=target.item_label,
+        item_category=target.item_category,
+        item_index=target.item_index,
+        items_per_site_requested=target.items_per_site_requested,
+        intended_page_type=target.intended_page_type,
         persona_name=persona.name,
+        device_type=persona.device_type,
+        location_name=persona.location_name,
+        location_rationale=persona.location_rationale,
+        browser_geolocation_lat=persona.browser_geolocation_lat,
+        browser_geolocation_lon=persona.browser_geolocation_lon,
+        geolocation_permission_granted=bool(persona.geolocation),
+        ip_proxy_used=bool(cfg.proxy_server),
+        proxy_server_label_or_host=_proxy_label_or_host(cfg.proxy_server, cfg.proxy_label),
+        proxy_scope=cfg.proxy_scope,
+        location_simulation_notes=_location_simulation_notes(bool(cfg.proxy_server)),
+        test_zip_value=test_zip_value,
+        test_zip_entered=False,
+        test_address_entered=False,
+        location_prompt_detected=False,
+        address_gate_unresolved=False,
+        proxy_location=cfg.proxy_location or "",
+        location_signal_alignment=alignment,
+        location_validation_notes=validation_notes,
+        location_simulation_level=sim_level,
         disclosure_found_exact=False,
         disclosure_found_normalized=False,
         disclosure_visible=False,
@@ -1669,13 +1944,13 @@ def make_error_result(
 
 async def audit_page(
     page: Page,
-    url: str,
+    target: AuditTarget,
     persona: PersonaConfig,
     run_id: str,
     cfg: AuditConfig,
     log: logging.Logger,
-    platform: SiteProfile | None = None,
 ) -> PageRunResult:
+    url = target.url
     ts = datetime.now(timezone.utc).isoformat()
     err: str | None = None
     disc: DisclosureEvaluation | None = None
@@ -1686,9 +1961,9 @@ async def audit_page(
 
     slug = slugify_url(url)
     safe = re.sub(r"[^A-Za-z0-9._-]+", "_", persona.name)
-    pf = _platform_row_fields(platform)
-    if platform:
-        pslug = re.sub(r"[^A-Za-z0-9._-]+", "_", platform.platform_name)
+    pf = _platform_row_fields(target.platform)
+    if target.platform:
+        pslug = re.sub(r"[^A-Za-z0-9._-]+", "_", target.platform.platform_name)
         base_name = f"{pslug}__{slug}__{safe}"
     else:
         base_name = f"{slug}__{safe}"
@@ -1700,8 +1975,9 @@ async def audit_page(
     geo: dict[str, Any] = {}
     pbd = _parse_pricing_breakdown_payload({})
     screenshot_annotated_path: str | None = None
+    test_zip_value = _test_zip_for_persona(persona, cfg.test_zip)
     try:
-        geo = await guided_exploration_loop(page, url, platform, cfg, log)
+        geo = await guided_exploration_loop(page, url, target.platform, cfg, log, test_zip_value)
         disc = geo.get("best_disc")
         prices = geo.get("best_prices") or []
         err = geo.get("error")
@@ -1765,6 +2041,21 @@ async def audit_page(
         pbd = _parse_pricing_breakdown_payload((geo or {}).get("pricing_breakdown") or {})
 
     bc = disc.best_candidate if disc else None
+    test_zip_entered = bool(geo.get("test_zip_entered"))
+    test_address_entered = bool(geo.get("test_address_entered"))
+    location_prompt_detected = bool(geo.get("location_prompt_detected"))
+    address_gate_unresolved = bool(geo.get("blocked_by_address_gate")) and not (
+        test_zip_entered or test_address_entered
+    )
+    alignment, sim_level, validation_notes = validate_location_signals(
+        persona=persona,
+        proxy_location=cfg.proxy_location or "",
+        ip_proxy_used=bool(cfg.proxy_server),
+        geolocation_set=bool(persona.geolocation),
+        test_zip_value=test_zip_value,
+        test_zip_entered=test_zip_entered,
+        test_address_entered=test_address_entered,
+    )
     top_price = prices[0].raw_text if prices else None
     modal, acc, foot, separate_surf = _surface_flags_from_candidate(bc)
     clicks_to_first = geo.get("clicks_to_disclosure")
@@ -1775,6 +2066,7 @@ async def audit_page(
 
     result = PageRunResult(
         run_id=run_id,
+        run_label=cfg.run_label,
         timestamp_iso=ts,
         url=url,
         target_url=url,
@@ -1785,7 +2077,32 @@ async def audit_page(
         requires_login=pf["requires_login"],
         likely_price_page_type=pf["likely_price_page_type"],
         platform_notes=pf["platform_notes"],
+        item_id=target.item_id,
+        item_label=target.item_label,
+        item_category=target.item_category,
+        item_index=target.item_index,
+        items_per_site_requested=target.items_per_site_requested,
+        intended_page_type=target.intended_page_type,
         persona_name=persona.name,
+        device_type=persona.device_type,
+        location_name=persona.location_name,
+        location_rationale=persona.location_rationale,
+        browser_geolocation_lat=persona.browser_geolocation_lat,
+        browser_geolocation_lon=persona.browser_geolocation_lon,
+        geolocation_permission_granted=bool(persona.geolocation),
+        ip_proxy_used=bool(cfg.proxy_server),
+        proxy_server_label_or_host=_proxy_label_or_host(cfg.proxy_server, cfg.proxy_label),
+        proxy_scope=cfg.proxy_scope,
+        location_simulation_notes=_location_simulation_notes(bool(cfg.proxy_server)),
+        test_zip_value=test_zip_value,
+        test_zip_entered=test_zip_entered,
+        test_address_entered=test_address_entered,
+        location_prompt_detected=location_prompt_detected,
+        address_gate_unresolved=address_gate_unresolved,
+        proxy_location=cfg.proxy_location or "",
+        location_signal_alignment=alignment,
+        location_validation_notes=validation_notes,
+        location_simulation_level=sim_level,
         disclosure_found_exact=disc.found_exact if disc else False,
         disclosure_found_normalized=disc.found_normalized if disc else False,
         disclosure_visible=bool(bc and bc.visible_in_viewport) if bc else False,
@@ -1874,6 +2191,7 @@ def _result_to_jsonable(r: PageRunResult) -> dict[str, Any]:
 
     out: dict[str, Any] = {
         "run_id": r.run_id,
+        "run_label": r.run_label,
         "timestamp": r.timestamp_iso,
         "url": r.url,
         "target_url": r.target_url,
@@ -1884,7 +2202,32 @@ def _result_to_jsonable(r: PageRunResult) -> dict[str, Any]:
         "requires_login": r.requires_login,
         "likely_price_page_type": r.likely_price_page_type,
         "platform_notes": r.platform_notes,
+        "item_id": r.item_id,
+        "item_label": r.item_label,
+        "item_category": r.item_category,
+        "item_index": r.item_index,
+        "items_per_site_requested": r.items_per_site_requested,
+        "intended_page_type": r.intended_page_type,
         "persona_name": r.persona_name,
+        "device_type": r.device_type,
+        "location_name": r.location_name,
+        "location_rationale": r.location_rationale,
+        "browser_geolocation_lat": r.browser_geolocation_lat,
+        "browser_geolocation_lon": r.browser_geolocation_lon,
+        "geolocation_permission_granted": r.geolocation_permission_granted,
+        "ip_proxy_used": r.ip_proxy_used,
+        "proxy_server_label_or_host": r.proxy_server_label_or_host,
+        "proxy_scope": r.proxy_scope,
+        "location_simulation_notes": r.location_simulation_notes,
+        "test_zip_value": r.test_zip_value,
+        "test_zip_entered": r.test_zip_entered,
+        "test_address_entered": r.test_address_entered,
+        "location_prompt_detected": r.location_prompt_detected,
+        "address_gate_unresolved": r.address_gate_unresolved,
+        "proxy_location": r.proxy_location,
+        "location_signal_alignment": r.location_signal_alignment,
+        "location_validation_notes": r.location_validation_notes,
+        "location_simulation_level": r.location_simulation_level,
         "disclosure_found_exact": r.disclosure_found_exact,
         "disclosure_found_normalized": r.disclosure_found_normalized,
         "disclosure_visible": r.disclosure_visible,
@@ -1990,6 +2333,8 @@ async def create_context(
     storage = cfg.global_storage_state or persona.storage_state_path
     if storage and storage.is_file():
         opts["storage_state"] = str(storage)
+    if cfg.proxy_server and cfg.proxy_scope == "browser_context":
+        opts["proxy"] = {"server": cfg.proxy_server}
 
     return await browser.new_context(**opts)
 
@@ -1997,66 +2342,113 @@ async def create_context(
 def write_persona_differences_csv(
     path: Path, results: list[PageRunResult], log: logging.Logger
 ) -> None:
-    """
-    Compare runs that share normalized target URL and platform across personas.
+    def _sig(rows: list[PageRunResult]) -> dict[str, Any]:
+        present = {bool(x.disclosure_found_exact or x.disclosure_found_normalized) for x in rows}
+        visible = {bool(x.disclosure_visible) for x in rows}
+        clicks = {int(x.disclosure_clicks_required) for x in rows}
+        price = {round(float(x.normalized_price_value), 2) if x.normalized_price_value is not None else None for x in rows}
+        conf = {round(float(x.pricing_state_confidence or 0.0), 3) for x in rows}
+        return {
+            "disclosure_present_diff": len(present) > 1,
+            "visibility_diff": len(visible) > 1,
+            "clicks_required_diff": len(clicks) > 1,
+            "price_diff": len(price) > 1,
+            "pricing_confidence_diff": len(conf) > 1,
+        }
 
-    Writes boolean flags where any pairwise attribute differs among the group's personas.
-    """
-    groups: dict[tuple[str, str], list[PageRunResult]] = {}
+    grouped: dict[tuple[str, str, str], list[PageRunResult]] = {}
     for r in results:
-        nu = normalized_target_url(r.target_url or r.url)
-        plat = (r.platform_name or "").strip().casefold()
-        groups.setdefault((nu, plat), []).append(r)
+        grouped.setdefault((r.platform_name, r.item_id, r.target_url), []).append(r)
 
     rows_out: list[dict[str, Any]] = []
-    for (norm_url, plat), grp in sorted(groups.items()):
+    for (platform_name, item_id, target_url), grp in sorted(grouped.items()):
         if len(grp) < 2:
             continue
-        names = "|".join(sorted({x.persona_name for x in grp}))
-        pres = {bool(x.disclosure_found_exact or x.disclosure_found_normalized) for x in grp}
-        vis = {bool(x.disclosure_visible) for x in grp}
-        clicks = {int(x.disclosure_clicks_required) for x in grp}
-        place = {
-            (
-                x.disclosure_position_relative_to_price,
-                (x.disclosure_placement_surface or "").lower(),
-                x.disclosure_alongside_price_visual_group,
-                x.disclosure_on_separate_visual_surface,
+        item_label = grp[0].item_label if grp else ""
+        by_loc: dict[str, list[PageRunResult]] = {}
+        by_dev: dict[str, list[PageRunResult]] = {}
+        for r in grp:
+            by_loc.setdefault(r.location_name or "unknown", []).append(r)
+            by_dev.setdefault(r.device_type or "unknown", []).append(r)
+
+        for loc_name, rows in sorted(by_loc.items()):
+            if len({x.device_type for x in rows}) < 2:
+                continue
+            diff = _sig(rows)
+            rows_out.append(
+                {
+                    "platform_name": platform_name,
+                    "item_id": item_id,
+                    "item_label": item_label,
+                    "target_url": target_url,
+                    "comparison_type": "device_effect",
+                    "held_constant_factor": "location_name",
+                    "held_constant_value": loc_name,
+                    "compared_factor": "device_type",
+                    "compared_values": "|".join(sorted({x.device_type for x in rows})),
+                    "n_rows_compared": len(rows),
+                    **diff,
+                    "notes": "Compares devices while holding location constant.",
+                }
             )
-            for x in grp
-        }
-        price_sig: set[Any] = set()
-        for x in grp:
-            v = x.normalized_price_value
-            price_sig.add(round(float(v), 2) if v is not None else None)
-        pconf = {round(float(x.pricing_state_confidence or 0.0), 3) for x in grp}
+
+        for dev_name, rows in sorted(by_dev.items()):
+            if len({x.location_name for x in rows}) < 2:
+                continue
+            diff = _sig(rows)
+            rows_out.append(
+                {
+                    "platform_name": platform_name,
+                    "item_id": item_id,
+                    "item_label": item_label,
+                    "target_url": target_url,
+                    "comparison_type": "location_effect",
+                    "held_constant_factor": "device_type",
+                    "held_constant_value": dev_name,
+                    "compared_factor": "location_name",
+                    "compared_values": "|".join(sorted({x.location_name for x in rows})),
+                    "n_rows_compared": len(rows),
+                    **diff,
+                    "notes": "Compares locations while holding device constant.",
+                }
+            )
+
+        diff = _sig(grp)
         rows_out.append(
             {
-                "normalized_url": norm_url,
-                "platform_name": plat,
-                "personas_compared": names,
-                "n_personas": len(grp),
-                "disclosure_present_diff": len(pres) > 1,
-                "visibility_diff": len(vis) > 1,
-                "clicks_diff": len(clicks) > 1,
-                "placement_diff": len(place) > 1,
-                "price_diff": len(price_sig) > 1,
-                "pricing_state_confidence_diff": len(pconf) > 1,
+                "platform_name": platform_name,
+                "item_id": item_id,
+                "item_label": item_label,
+                "target_url": target_url,
+                "comparison_type": "full_matrix",
+                "held_constant_factor": "",
+                "held_constant_value": "",
+                "compared_factor": "device_type_x_location_name",
+                "compared_values": "|".join(sorted({f"{x.device_type}__{x.location_name}" for x in grp})),
+                "n_rows_compared": len(grp),
+                **diff,
+                "notes": "All available device x location rows for this platform item.",
             }
         )
 
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = [
-        "normalized_url",
         "platform_name",
-        "personas_compared",
-        "n_personas",
+        "item_id",
+        "item_label",
+        "target_url",
+        "comparison_type",
+        "held_constant_factor",
+        "held_constant_value",
+        "compared_factor",
+        "compared_values",
+        "n_rows_compared",
         "disclosure_present_diff",
         "visibility_diff",
-        "clicks_diff",
-        "placement_diff",
+        "clicks_required_diff",
         "price_diff",
-        "pricing_state_confidence_diff",
+        "pricing_confidence_diff",
+        "notes",
     ]
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
@@ -2105,15 +2497,41 @@ def write_aggregated_summary_csv(path: Path, results: list[PageRunResult], log: 
 
 CSV_FIELDS = [
     "run_id",
+    "run_label",
     "timestamp",
     "platform_name",
     "category",
     "homepage_url",
+    "item_id",
+    "item_label",
+    "item_category",
+    "item_index",
+    "items_per_site_requested",
+    "intended_page_type",
     "target_url",
     "pilot_priority",
     "requires_login",
     "likely_price_page_type",
     "persona_name",
+    "device_type",
+    "location_name",
+    "location_rationale",
+    "browser_geolocation_lat",
+    "browser_geolocation_lon",
+    "geolocation_permission_granted",
+    "ip_proxy_used",
+    "proxy_server_label_or_host",
+    "proxy_scope",
+    "location_simulation_notes",
+    "test_zip_value",
+    "test_zip_entered",
+    "test_address_entered",
+    "location_prompt_detected",
+    "address_gate_unresolved",
+    "proxy_location",
+    "location_signal_alignment",
+    "location_validation_notes",
+    "location_simulation_level",
     "persona_group",
     "account_state",
     "url",
@@ -2177,15 +2595,41 @@ CSV_FIELDS = [
 def result_to_csv_row(r: PageRunResult) -> dict[str, Any]:
     return {
         "run_id": r.run_id,
+        "run_label": r.run_label,
         "timestamp": r.timestamp_iso,
         "platform_name": r.platform_name,
         "category": r.category,
         "homepage_url": r.homepage_url,
+        "item_id": r.item_id,
+        "item_label": r.item_label,
+        "item_category": r.item_category,
+        "item_index": r.item_index,
+        "items_per_site_requested": r.items_per_site_requested,
+        "intended_page_type": r.intended_page_type,
         "target_url": r.target_url,
         "pilot_priority": r.pilot_priority,
         "requires_login": r.requires_login,
         "likely_price_page_type": r.likely_price_page_type,
         "persona_name": r.persona_name,
+        "device_type": r.device_type,
+        "location_name": r.location_name,
+        "location_rationale": r.location_rationale,
+        "browser_geolocation_lat": r.browser_geolocation_lat,
+        "browser_geolocation_lon": r.browser_geolocation_lon,
+        "geolocation_permission_granted": r.geolocation_permission_granted,
+        "ip_proxy_used": r.ip_proxy_used,
+        "proxy_server_label_or_host": r.proxy_server_label_or_host,
+        "proxy_scope": r.proxy_scope,
+        "location_simulation_notes": r.location_simulation_notes,
+        "test_zip_value": r.test_zip_value,
+        "test_zip_entered": r.test_zip_entered,
+        "test_address_entered": r.test_address_entered,
+        "location_prompt_detected": r.location_prompt_detected,
+        "address_gate_unresolved": r.address_gate_unresolved,
+        "proxy_location": r.proxy_location,
+        "location_signal_alignment": r.location_signal_alignment,
+        "location_validation_notes": r.location_validation_notes,
+        "location_simulation_level": r.location_simulation_level,
         "persona_group": r.persona_group,
         "account_state": r.account_state,
         "url": r.url,
@@ -2288,7 +2732,7 @@ def validate_summary_csv(
 
 
 async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult]:
-    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "_" + uuid.uuid4().hex[:8]
+    run_id = cfg.run_id or _build_run_id(cfg.output_dir, cfg.run_label or "run")
     run_dir = ensure_run_dir(cfg.output_dir, run_id)
     csv_path = run_dir / "summary.csv"
     aggregated_csv_path = run_dir / "aggregated_summary.csv"
@@ -2298,13 +2742,26 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
     ]
     sem = asyncio.Semaphore(max(1, cfg.max_concurrency))
     results: list[PageRunResult] = []
+    log.info(
+        "Run folder=%s run_label=%s proxy_scope=%s ip_proxy_used=%s",
+        run_dir.resolve(),
+        cfg.run_label,
+        cfg.proxy_scope,
+        bool(cfg.proxy_server),
+    )
+    log.info(
+        "Method note: Browser geolocation is simulated via Playwright; IP location changes only when proxy is configured."
+    )
 
     try:
         raw_results: list[Any] | None = None
         outer_fatal: BaseException | None = None
         try:
             async with async_playwright() as pw:
-                browser = await pw.chromium.launch(headless=cfg.headless)
+                launch_opts: dict[str, Any] = {"headless": cfg.headless}
+                if cfg.proxy_server:
+                    launch_opts["proxy"] = {"server": cfg.proxy_server}
+                browser = await pw.chromium.launch(**launch_opts)
                 try:
 
                     async def one_pair(target: AuditTarget, persona: PersonaConfig) -> PageRunResult:
@@ -2315,12 +2772,11 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
                                 page = await context.new_page()
                                 return await audit_page(
                                     page,
-                                    target.url,
+                                    target,
                                     persona,
                                     run_id,
                                     cfg,
                                     log,
-                                    platform=target.platform,
                                 )
                             except Exception as e:
                                 log.exception(
@@ -2330,10 +2786,8 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
                                 )
                                 return make_error_result(
                                     run_id=run_id,
-                                    url=target.url,
-                                    target_url=target.url,
+                                    target=target,
                                     persona=persona,
-                                    platform=target.platform,
                                     cfg=cfg,
                                     error_msg=f"{type(e).__name__}: {e}",
                                 )
@@ -2362,10 +2816,8 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
             results = [
                 make_error_result(
                     run_id=run_id,
-                    url=t.url,
-                    target_url=t.url,
+                    target=t,
                     persona=p,
-                    platform=t.platform,
                     cfg=cfg,
                     error_msg=msg,
                 )
@@ -2383,10 +2835,8 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
                 results = [
                     make_error_result(
                         run_id=run_id,
-                        url=t.url,
-                        target_url=t.url,
+                        target=t,
                         persona=p,
-                        platform=t.platform,
                         cfg=cfg,
                         error_msg=msg,
                     )
@@ -2407,21 +2857,19 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
                         norm.append(
                             make_error_result(
                                 run_id=run_id,
-                                url=t.url,
-                                target_url=t.url,
+                                target=t,
                                 persona=p,
-                                platform=t.platform,
                                 cfg=cfg,
                                 error_msg=em,
                             )
                         )
                 results = norm
 
-        diff_path = run_dir / "persona_differences.csv"
+        diff_path = run_dir / "persona_comparison.csv"
         try:
             write_persona_differences_csv(diff_path, results, log)
         except Exception as pe:
-            log.warning("persona_differences.csv skipped: %s", pe)
+            log.warning("persona_comparison.csv skipped: %s", pe)
 
         summ_path = run_dir / "aggregated_summary.json"
         try:
@@ -2451,46 +2899,85 @@ async def run_audit(cfg: AuditConfig, log: logging.Logger) -> list[PageRunResult
     return results
 
 
-def default_personas() -> list[PersonaConfig]:
-    """Three default study arms: desktop × City Hall, iPhone × LIC, Android × Brooklyn."""
-    return [
-        PersonaConfig(
-            name="desktop_nyc_city_hall_fresh",
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            ),
-            locale="en-US",
-            geolocation=GeolocationConfig(40.7127, -74.0040),
-            timezone="America/New_York",
-            persona_group="web_desktop",
-            account_state="fresh",
+DEVICE_PRESETS: dict[str, dict[str, str]] = {
+    "desktop_browser": {
+        "user_agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         ),
-        PersonaConfig(
-            name="iphone_long_island_city_returning",
-            user_agent=(
-                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 "
-                "(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
-            ),
-            locale="en-US",
-            geolocation=GeolocationConfig(40.7440, -73.9485),
-            timezone="America/New_York",
-            persona_group="iphone_mobile",
-            account_state="returning",
+        "persona_group": "desktop_browser",
+    },
+    "iphone_mobile": {
+        "user_agent": (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 "
+            "(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
         ),
-        PersonaConfig(
-            name="android_brooklyn_high_activity",
-            user_agent=(
-                "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
-            ),
-            locale="en-US",
-            geolocation=GeolocationConfig(40.6943, -73.9852),
-            timezone="America/New_York",
-            persona_group="android_mobile",
-            account_state="high_activity",
+        "persona_group": "iphone_mobile",
+    },
+    "android_mobile": {
+        "user_agent": (
+            "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
         ),
-    ]
+        "persona_group": "android_mobile",
+    },
+}
+
+LOCATION_PRESETS: dict[str, dict[str, Any]] = {
+    "city_hall_manhattan": {
+        "lat": 40.7127,
+        "lon": -74.0040,
+        "rationale": "Civic/legal center of NYC and central Manhattan baseline.",
+    },
+    "long_island_city_queens": {
+        "lat": 40.7440,
+        "lon": -73.9485,
+        "rationale": "Queens location and mixed residential/commercial outer-borough area.",
+    },
+    "brooklyn": {
+        "lat": 40.6943,
+        "lon": -73.9852,
+        "rationale": "Outer-borough residential/commercial comparison area.",
+    },
+}
+
+LOCATION_TEST_ZIPS: dict[str, str] = {
+    "city_hall_manhattan": "10007",
+    "long_island_city_queens": "11101",
+    "brooklyn": "11201",
+}
+
+
+def default_personas(
+    selected_devices: list[str] | None = None,
+    selected_locations: list[str] | None = None,
+) -> list[PersonaConfig]:
+    devices = selected_devices or list(DEVICE_PRESETS.keys())
+    locations = selected_locations or list(LOCATION_PRESETS.keys())
+    out: list[PersonaConfig] = []
+    for device in devices:
+        d = DEVICE_PRESETS[device]
+        for loc_name in locations:
+            loc = LOCATION_PRESETS[loc_name]
+            gloc = GeolocationConfig(float(loc["lat"]), float(loc["lon"]))
+            out.append(
+                PersonaConfig(
+                    name=f"{device}__{loc_name}",
+                    user_agent=d["user_agent"],
+                    locale="en-US",
+                    timezone="America/New_York",
+                    geolocation=gloc,
+                    persona_group=d["persona_group"],
+                    account_state="fresh",
+                    device_type=device,
+                    location_name=loc_name,
+                    location_rationale=str(loc["rationale"]),
+                    browser_geolocation_lat=gloc.latitude,
+                    browser_geolocation_lon=gloc.longitude,
+                    persona_id=f"{device}__{loc_name}",
+                )
+            )
+    return out
 
 
 def parse_args() -> argparse.Namespace:
@@ -2550,6 +3037,11 @@ def parse_args() -> argparse.Namespace:
         default=Path("output"),
         help="Base directory for run artifacts (default: ./output).",
     )
+    p.add_argument(
+        "--run-label",
+        default=None,
+        help="Optional label used in run folder naming (output/YYYY-MM-DD_HH-MM-SS_<run-label>/).",
+    )
     p.add_argument("--headed", action="store_true", help="Run headed (not headless).")
     p.add_argument(
         "--max-concurrency",
@@ -2596,6 +3088,43 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="JSON file (array of personas) to use instead of built-in default_personas().",
     )
+    p.add_argument(
+        "--device",
+        action="append",
+        choices=sorted(DEVICE_PRESETS.keys()),
+        help="Repeatable device selector for factorial persona matrix.",
+    )
+    p.add_argument(
+        "--location",
+        action="append",
+        choices=sorted(LOCATION_PRESETS.keys()),
+        help="Repeatable location selector for factorial persona matrix.",
+    )
+    p.add_argument(
+        "--items-per-site",
+        type=int,
+        default=1,
+        help="Audit up to N target items/pages per platform (default: 1).",
+    )
+    p.add_argument(
+        "--proxy-server",
+        type=str,
+        default=None,
+        help="Optional proxy server (e.g. http://host:port) for browser-level IP routing.",
+    )
+    p.add_argument(
+        "--proxy-label",
+        type=str,
+        default=None,
+        help="Optional human-readable label for proxy metadata in outputs.",
+    )
+    p.add_argument(
+        "--proxy-location",
+        type=str,
+        choices=sorted(LOCATION_PRESETS.keys()),
+        default=None,
+        help="Optional location label for proxy IP routing metadata alignment.",
+    )
     p.add_argument("--log-level", default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR"])
     return p.parse_args()
 
@@ -2623,10 +3152,10 @@ def resolve_audit_targets(ns: argparse.Namespace, log: logging.Logger) -> list[A
                 "are ignored when using --urls or --url-file."
             )
         if ns.urls:
-            return manual_audit_targets(list(ns.urls))
+            return manual_audit_targets(list(ns.urls), ns.items_per_site)
         lines = ns.url_file.read_text(encoding="utf-8").splitlines()
         urls = [ln.strip() for ln in lines if ln.strip() and not ln.strip().startswith("#")]
-        return manual_audit_targets(urls)
+        return manual_audit_targets(urls, ns.items_per_site)
 
     # Registry mode (default when no manual URLs)
     if ns.all_enabled:
@@ -2659,6 +3188,7 @@ def resolve_audit_targets(ns: argparse.Namespace, log: logging.Logger) -> list[A
         enabled_only=enabled_only,
         categories=categories,
         platform_names=platform_names,
+        items_per_site=ns.items_per_site,
     )
     return targets
 
@@ -2676,9 +3206,22 @@ def main() -> None:
         log.error("No audit targets after applying filters (try --all-enabled or relax filters).")
         raise SystemExit(1)
 
+    manual_mode = bool(ns.urls or ns.url_file)
+    run_label = ns.run_label or ("manual-urls" if manual_mode else "registry")
+    run_id = _build_run_id(ns.output_dir.resolve(), run_label)
+    selected_devices = list(dict.fromkeys(ns.device or []))
+    selected_locations = list(dict.fromkeys(ns.location or []))
+    personas = (
+        load_personas_from_json(ns.personas_file.resolve(), log)
+        if ns.personas_file
+        else default_personas(selected_devices=selected_devices, selected_locations=selected_locations)
+    )
+
     cfg = AuditConfig(
         targets=targets,
         output_dir=ns.output_dir.resolve(),
+        run_label=_sanitize_run_label(run_label),
+        run_id=run_id,
         headless=not ns.headed,
         max_concurrency=ns.max_concurrency,
         capture_screenshot=not ns.no_screenshot,
@@ -2686,14 +3229,15 @@ def main() -> None:
         max_exploration_depth=ns.max_depth,
         use_test_address=ns.use_test_address,
         continue_after_disclosure=ns.continue_after_disclosure,
+        test_zip=DEFAULT_TEST_ZIP,
         global_storage_state=ns.use_storage_state.resolve()
         if ns.use_storage_state
         else None,
-        personas=(
-            load_personas_from_json(ns.personas_file.resolve(), log)
-            if ns.personas_file
-            else default_personas()
-        ),
+        personas=personas,
+        proxy_server=ns.proxy_server,
+        proxy_label=ns.proxy_label,
+        proxy_location=ns.proxy_location,
+        proxy_scope="browser_launch" if ns.proxy_server else "none",
     )
 
     asyncio.run(run_audit(cfg, log))
