@@ -13,8 +13,13 @@ dist/
 build/
 
 # Environment & secrets
+
+output/
+output/**/*.html
+output/**/*.json
+output/**/*.png
 .env
-.env.*
+*.env
 
 # OS
 .DS_Store
