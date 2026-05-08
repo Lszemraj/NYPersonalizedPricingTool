@@ -1,0 +1,307 @@
+<div tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modalContent-:r21:-Title" class="ModalContainer-sc-ibg5mu-0 dgpnet"><span tabindex="-1" data-prism-modal-initial-focus="" id="modalContent-:r21:-Title" aria-hidden="false" class="VisuallyHiddenText-sc-92syk4-0 fhrVXz">NYC &amp; NY law update</span><div class="ModalContentContainer-sc-ibg5mu-3 kRvnwt"><div class="StyledStackChildren-sc-1cimee4-0 doMoPU"><div class="sc-ea5acdf3-0 jCgasC"><div><img src="https://img.cdn4dd.com/cdn-cgi/image/fit=contain,format=auto,quality=50/https://cdn.doordash.com/media/photosV2/3005d39f-887a-4844-a54b-04a7c9efe4fd-retina-large.png" alt="NYC &amp; NY law update"></div></div><div class="sc-ea5acdf3-1 jCaHJT"><span class="Text-sc-yxnz5n-0 hZvYic"><span>NYC &amp; NY law update</span></span></div></div><div class="ModalContent-sc-ibg5mu-4 bBYuRf"><div data-mm-type="announcement" data-mm-id="f5c4d4e7-7c47-4911-9281-28130e7cf602" class="sc-ea5acdf3-2 dIKqRp"><div class="StyledStackChildren-sc-1cimee4-0 kpYNec"><span class="Text-sc-yxnz5n-0 eLqMaN">Regulations in New York City have increased the cost of facilitating deliveries. As a result, we charge a $1.99 NYC Regulatory Response Fee to delivery orders in the NYC area.
+
+Also, NY law requires that we make the following disclosure because we use information such as your delivery address to calculate distance and fees, and your past orders and favorite stores to provide personalized promotions and/or discounts: This price was set by an algorithm using your personal data.</span><div class="StyledStackChildren-sc-1cimee4-0 khRhdj"><button kind="BUTTON/PRIMARY" data-anchor-id="AnnouncementDismissButton" type="button" class="ButtonRoot-sc-j2wkqj-0 cpFoPM"><span class="StyledInset-sc-1tdtpkk-0 hHREzh ContentWrapper-sc-j2wkqj-2 ldnkuy"><span class="StyledInlineChildren-sc-r2rlwm-0 cMZhTx LayoutContainer-sc-j2wkqj-3"><span class="MainContentContainer-sc-j2wkqj-4 cYtcaa"><span class="Text-sc-yxnz5n-0 eTxGOz">Got It</span></span></span></span></button></div></div></div></div></div></div>
+
+
+element.style {
+}
+<style>
+.eMNNXH > * {
+    pointer-events: auto;
+}
+<style>
+@media (max-width: 30em) {
+    .dgpnet {
+        max-width: calc(100vw - var(--usage-space-medium));
+        max-height: calc(100vh - (var(--usage-space-medium) * 2));
+        height: auto;
+        inset-block-start: 0px;
+        border-radius: var(--usage-border-radius-large);
+        width: 100vw;
+    }
+}
+<style>
+.dgpnet {
+    position: relative;
+    background: var(--usage-color-background-elevated-default);
+    box-shadow: var(--usage-elevation-5);
+    min-height: 0px;
+    max-height: calc(100vh - (var(--usage-space-medium) * 2));
+    max-width: 480px;
+    width: calc(100vw - var(--usage-space-medium) * 2);
+    border-radius: var(--usage-border-radius-large);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    outline: none;
+    inset-block-end: 0px;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+user agent stylesheet
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+<style>
+.eMNNXH {
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    inset-block-start: 0px;
+    inset-inline-start: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none !important;
+}
+<style>
+.iKXVNt > * {
+    pointer-events: auto;
+}
+<style>
+.iKXVNt {
+    position: fixed;
+    inset-block-start: 0px;
+    inset-inline-start: 0px;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+<style>
+.prism-theme.gZIAVK.gZIAVK, .gZIAVK.gZIAVK .prism-theme {
+    --base-color-neutral-15: #d6d6d6ff;
+    --base-color-neutral-25: #c4c4c4ff;
+    --base-color-neutral-35: #b2b2b2ff;
+    --base-color-neutral-45: #9f9f9fff;
+    --base-color-neutral-55: #8b8b8bff;
+    --base-color-neutral-65: #767676ff;
+    --base-color-neutral-75: #606060ff;
+    --base-color-neutral-85: #494949ff;
+    --usage-border-radius-xx-large: var(--base-size-5);
+    --usage-color-highlight-subdued-default: var(--base-color-red-5);
+    --usage-color-highlight-subdued-hovered: var(--base-color-red-10);
+    --usage-color-highlight-subdued-pressed: var(--base-color-red-20);
+    --usage-color-highlight-default: var(--base-color-red-60);
+    --usage-color-highlight-hovered: var(--base-color-red-70);
+    --usage-color-highlight-pressed: var(--base-color-red-80);
+    --usage-color-highlight-strong-default: var(--base-color-red-70);
+    --usage-color-highlight-strong-hovered: var(--base-color-red-80);
+    --usage-color-highlight-strong-pressed: var(--base-color-red-90);
+    --usage-type-title-large-font-family: var(--usage-font-family-brand);
+    --usage-type-title-large-font-weight: var(--usage-font-weight-xstrong);
+    --usage-type-title-large-size: var(--base-font-size-30);
+    --usage-type-title-large-line-height: var(--base-line-height-20);
+    --usage-type-title-large-letter-spacing: var(--base-letter-spacing-50);
+    --usage-type-title-large-text-decoration: none;
+    --usage-type-title-large-text-transform: none;
+    --usage-type-title-medium-font-family: var(--usage-font-family-brand);
+    --usage-type-title-medium-font-weight: var(--usage-font-weight-xstrong);
+    --usage-type-title-medium-size: var(--base-font-size-25);
+    --usage-type-title-medium-line-height: var(--base-line-height-15);
+    --usage-type-title-medium-letter-spacing: var(--base-letter-spacing-50);
+    --usage-type-title-medium-text-decoration: none;
+    --usage-type-title-medium-text-transform: none;
+    --usage-type-display-large-font-family: var(--usage-font-family-brand);
+    --usage-type-display-large-font-weight: var(--usage-font-weight-xstrong);
+    --usage-type-display-large-size: var(--base-font-size-60);
+    --usage-type-display-large-line-height: var(--base-line-height-60);
+    --usage-type-display-large-letter-spacing: var(--base-letter-spacing-10);
+    --usage-type-display-large-text-decoration: none;
+    --usage-type-display-large-text-transform: none;
+    --usage-type-display-medium-font-family: var(--usage-font-family-brand);
+    --usage-type-display-medium-font-weight: var(--usage-font-weight-xstrong);
+    --usage-type-display-medium-size: var(--base-font-size-40);
+    --usage-type-display-medium-line-height: var(--base-line-height-30);
+    --usage-type-display-medium-letter-spacing: var(--base-letter-spacing-20);
+    --usage-type-display-medium-text-decoration: none;
+    --usage-type-display-medium-text-transform: none;
+    --usage-type-display-x-large-font-family: var(--usage-font-family-brand);
+    --usage-type-display-x-large-font-weight: var(--usage-font-weight-xstrong);
+    --usage-type-display-x-large-size: var(--base-font-size-60);
+    --usage-type-display-x-large-line-height: var(--base-line-height-60);
+Show all properties (30 more)
+}
+<style>
+.prism-theme {
+    --base-font-family-default: DD Norms;
+    --base-font-family-brand: DD Norms;
+    --base-font-weight-light: 400;
+    --base-font-weight-regular: 500;
+    --base-font-weight-semibold: 700;
+    --base-font-weight-bold: 700;
+    --base-font-weight-extrabold: 800;
+    --base-font-size-5: 10px;
+    --base-font-size-10: 12px;
+    --base-font-size-15: 14px;
+    --base-font-size-20: 16px;
+    --base-font-size-25: 18px;
+    --base-font-size-30: 20px;
+    --base-font-size-35: 22px;
+    --base-font-size-40: 24px;
+    --base-font-size-50: 28px;
+    --base-font-size-60: 32px;
+    --base-font-size-70: 36px;
+    --base-font-size-80: 40px;
+    --base-font-size-90: 44px;
+    --base-font-size-100: 48px;
+    --base-font-size-120: 56px;
+    --base-font-size-130: 60px;
+    --base-font-size-160: 72px;
+    --base-font-size-190: 84px;
+    --base-font-size-xx-small: var(--base-font-size-5);
+    --base-font-size-x-small: var(--base-font-size-10);
+    --base-font-size-small: var(--base-font-size-15);
+    --base-font-size-medium: var(--base-font-size-20);
+    --base-font-size-large: var(--base-font-size-25);
+    --base-font-size-x-large: var(--base-font-size-30);
+    --base-font-size-xx-large: var(--base-font-size-40);
+    --base-font-size-xxx-large: var(--base-font-size-60);
+    --base-font-size-xxxx-large: var(--base-font-size-80);
+    --base-font-size-xxxxx-large: var(--base-font-size-90);
+    --base-letter-spacing-0: -2px;
+    --base-letter-spacing-10: -0.8px;
+    --base-letter-spacing-20: -0.5px;
+    --base-letter-spacing-30: -0.4px;
+    --base-letter-spacing-40: -0.3px;
+    --base-letter-spacing-50: -0.2px;
+    --base-letter-spacing-70: -0.01px;
+    --base-line-height-0: 16px;
+    --base-line-height-5: 18px;
+    --base-line-height-10: 20px;
+    --base-line-height-15: 22px;
+    --base-line-height-20: 24px;
+    --base-line-height-25: 26px;
+    --base-line-height-30: 28px;
+    --base-line-height-35: 30px;
+Show all properties (1795 more)
+}
+<style>
+.prism-theme {
+    --base-font-family-default: DD Norms;
+    --base-font-family-brand: DD Norms;
+    --base-font-weight-light: 400;
+    --base-font-weight-regular: 500;
+    --base-font-weight-semibold: 700;
+    --base-font-weight-bold: 700;
+    --base-font-weight-extrabold: 800;
+    --base-font-size-5: 10px;
+    --base-font-size-10: 12px;
+    --base-font-size-15: 14px;
+    --base-font-size-20: 16px;
+    --base-font-size-25: 18px;
+    --base-font-size-30: 20px;
+    --base-font-size-35: 22px;
+    --base-font-size-40: 24px;
+    --base-font-size-50: 28px;
+    --base-font-size-60: 32px;
+    --base-font-size-70: 36px;
+    --base-font-size-80: 40px;
+    --base-font-size-90: 44px;
+    --base-font-size-100: 48px;
+    --base-font-size-120: 56px;
+    --base-font-size-130: 60px;
+    --base-font-size-160: 72px;
+    --base-font-size-190: 84px;
+    --base-font-size-xx-small: var(--base-font-size-5);
+    --base-font-size-x-small: var(--base-font-size-10);
+    --base-font-size-small: var(--base-font-size-15);
+    --base-font-size-medium: var(--base-font-size-20);
+    --base-font-size-large: var(--base-font-size-25);
+    --base-font-size-x-large: var(--base-font-size-30);
+    --base-font-size-xx-large: var(--base-font-size-40);
+    --base-font-size-xxx-large: var(--base-font-size-60);
+    --base-font-size-xxxx-large: var(--base-font-size-80);
+    --base-font-size-xxxxx-large: var(--base-font-size-90);
+    --base-letter-spacing-0: -2px;
+    --base-letter-spacing-10: -0.8px;
+    --base-letter-spacing-20: -0.5px;
+    --base-letter-spacing-30: -0.4px;
+    --base-letter-spacing-40: -0.3px;
+    --base-letter-spacing-50: -0.2px;
+    --base-letter-spacing-70: -0.01px;
+    --base-line-height-0: 16px;
+    --base-line-height-5: 18px;
+    --base-line-height-10: 20px;
+    --base-line-height-15: 22px;
+    --base-line-height-20: 24px;
+    --base-line-height-25: 26px;
+    --base-line-height-30: 28px;
+    --base-line-height-35: 30px;
+Show all properties (1795 more)
+}
+<style>
+body {
+    -webkit-font-smoothing: antialiased;
+    font-variant-ligatures: no-common-ligatures;
+    margin: 0px;
+    padding: 0px;
+}
+<style>
+body {
+    -webkit-font-smoothing: antialiased;
+    font-variant-ligatures: no-common-ligatures;
+    margin: 0px;
+    padding: 0px;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+<style>
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+
+background-attachmentscroll
+background-clipborder-box
+background-colorrgb(255, 255, 255)
+background-imagenone
+background-originpadding-box
+background-position-x0%
+background-position-y0%
+background-repeatrepeat
+background-sizeauto
+border-bottom-left-radius12px
+border-bottom-right-radius12px
+border-top-left-radius12px
+border-top-right-radius12px
+box-shadowrgba(25, 25, 25, 0.2) 0px 6px 20px 0px
+box-sizingborder-box
+displayflex
+flex-directioncolumn
+font-variant-ligaturesno-common-ligatures
+height601px
+inset-block-end0px
+inset-block-start0px
+max-height657.2px
+max-width334px
+min-height0px
+outline-colorrgb(0, 0, 0)
+outline-stylenone
+outline-width2.8px
+overflow-xhidden
+overflow-yhidden
+pointer-eventsauto
+positionrelative
+unicode-bidiisolate
+width334px
+-webkit-font-smoothingantialiased
+

@@ -1,0 +1,72 @@
+{
+  "captures": {
+    "instacart": {
+      "files": {
+        "html": "captures/instacart.txt",
+        "screenshot": "captures/instacart.png"
+      },
+      "screenshot": {
+        "width_px": 2048,
+        "height_px": 1149,
+        "viewport_width_px": 2048,
+        "viewport_height_px": 1149,
+        "browser_zoom_percent": 100,
+        "device_scale_factor": 1,
+        "scroll_y_px": 0,
+        "fold_y_px": 1149
+      },
+      "workflow": {
+        "capture_stage": "checkout_summary",
+        "clicks_to_visible_disclosure": 0,
+        "requires_login": true,
+        "requires_cart": true,
+        "requires_checkout_stage": true,
+        "requires_scroll_to_see_disclosure": false,
+        "modal_appeared_automatically": false,
+        "disclosure_hidden_behind_tooltip": false,
+        "user_had_to_open_fee_details": false,
+        "user_had_to_open_terms_or_privacy_link": false
+      },
+      "boxes": {
+        "disclosure_box": [0, 0, 0, 0],
+        "required_sentence_box": [0, 0, 0, 0],
+        "total_price_box": [0, 0, 0, 0],
+        "total_row_box": [0, 0, 0, 0],
+        "primary_cta_box": [0, 0, 0, 0],
+        "summary_panel_box": [0, 0, 0, 0],
+        "legal_disclaimer_block_box": [0, 0, 0, 0],
+        "modal_box": null
+      },
+      "colors": {
+        "disclosure_text_rgb": [0, 0, 0],
+        "disclosure_background_rgb": [255, 255, 255],
+        "required_sentence_text_rgb": [0, 0, 0],
+        "total_price_text_rgb": [0, 0, 0],
+        "cta_background_rgb": [0, 0, 0],
+        "cta_text_rgb": [255, 255, 255],
+        "surrounding_legal_text_rgb": [0, 0, 0],
+        "page_background_rgb": [255, 255, 255],
+        "summary_panel_background_rgb": [255, 255, 255]
+      },
+      "manual_classification": {
+        "disclosure_position_description": "bottom_of_summary_panel_below_continue_button",
+        "visual_grouping": "legal_disclaimer_block",
+        "disclosure_visually_distinct_from_surrounding_text": false,
+        "required_sentence_bolded": false,
+        "required_sentence_standalone": false,
+        "disclosure_has_heading_or_label": false,
+        "disclosure_has_border_or_callout": false,
+        "disclosure_has_icon": false,
+        "disclosure_same_panel_as_total": true,
+        "disclosure_appears_below_total": true,
+        "disclosure_appears_below_primary_cta": true,
+        "disclosure_appears_before_primary_cta": false
+      },
+      "notes": {
+        "reviewer_initials": "CM",
+        "review_date": "",
+        "freeform_note": ""
+      }
+    }
+  }
+}

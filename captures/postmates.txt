@@ -1,0 +1,50 @@
+<div class="_gs _gt"><h6 data-baseweb="typo-headingxsmall" class="_er _hr _b1 _bk _bm _gz _h0">Order total</h6><div class="_h6"><div data-test="fare-breakdown" class="_al _am _h9"><ul class="_al _am _h9"><li class="_bp _bq _br _bs _bt _al _et _bc"><div class="_al _bc _aq _jy"><div data-testid="fare-breakdown-charge-badge-subtotal-label" class="_bp _bq _br _bs _bt _al _am _f8">Subtotal</div></div><div data-testid="fare-breakdown-charge-badge-subtotal" class="_bp _bq _br _bs _bt _f8"><span class="">$140.00</span></div></li><li class="_bp _bq _br _bs _bt _al _et _bc"><div class="_al _bc _aq _jy"><div data-testid="fare-breakdown-charge-badge-delivery-fee-label" class="_bp _bq _br _bs _bt _al _am _f8">Delivery Fee</div><div id="bui2__anchor" class="_al _bc _jz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><title>Circle i</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm0 19c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8Zm-1.5-9v7h3v-7h-3ZM14 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor"></path></svg></div></div><div data-testid="fare-breakdown-charge-badge-delivery-fee" class="_bp _bq _br _bs _bt _f8"><span class="">$5.99</span></div></li><li class="_bp _bq _br _bs _bt _al _et _bc"><div class="_al _bc _aq _jy"><div data-testid="fare-breakdown-charge-badge-postmates-service-fee-label" class="_bp _bq _br _bs _bt _al _am _f8">Postmates Service Fee</div><div id="bui3__anchor" class="_al _bc _jz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><title>Circle i</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm0 19c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8Zm-1.5-9v7h3v-7h-3ZM14 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor"></path></svg></div></div><div data-testid="fare-breakdown-charge-badge-postmates-service-fee" class="_bp _bq _br _bs _bt _f8"><span class="">$7.00</span></div></li><li class="_bp _bq _br _bs _bt _al _et _bc"><div class="_al _bc _aq _jy"><div data-testid="fare-breakdown-charge-badge-taxes-label" class="_bp _bq _br _bs _bt _al _am _f8">Taxes</div></div><div data-testid="fare-breakdown-charge-badge-taxes" class="_bp _bq _br _bs _bt _f8"><span class="">$12.43</span></div></li></ul><div class="_al _am _h9"><hr class="_ho _bu _hr _hp"><div data-testid="checkout-tipping-section" class="_al _am"><div class="_al"><div class="_al _bc _cm"><h2 data-testid="checkout-tipping-title" class="_bp _bq _bm _ds _bt">Add a tip</h2><div class="spacer _12"></div><a href="/checkout?diningMode=DELIVERY&amp;effect=&amp;marketing_vistor_id=824e180a-bd4a-4935-b0d2-2cfee258de7b&amp;mod=tipInfo&amp;ps=1"><div class="_k0 _ea _ep"><svg width="16px" height="16px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M11.9999 2.83398C6.91658 2.83398 2.83325 6.91732 2.83325 12.0007C2.83325 17.084 6.91658 21.1673 11.9999 21.1673C17.0833 21.1673 21.1666 17.084 21.1666 12.0007C21.1666 6.91732 17.0833 2.83398 11.9999 2.83398ZM13.2499 17.834H10.7499V11.1673H13.2499V17.834ZM11.9999 9.50065C11.0833 9.50065 10.3333 8.75065 10.3333 7.83398C10.3333 6.91732 11.0833 6.16732 11.9999 6.16732C12.9166 6.16732 13.6666 6.91732 13.6666 7.83398C13.6666 8.75065 12.9166 9.50065 11.9999 9.50065Z" fill="#71757D"></path></svg></div></a></div><div class="_bp _bq _bm _ds _bt">$0.00</div></div><div class="_bp _f7 _br _ev _ew _f8">Tips are based on your order total of $165.42 before any discounts or promotions. Learn how couriers receive tips.</div><div class="_al _by _i1 _h9 _k1"><div class="_ak"><button data-testid="tip-option-0" aria-label="5%" class="_bp _f7 _bm _ev _ew _k2 _gd _k3 _bc _k4 _b1 _al _dk _k5 _k6 _k7 _k8 _jj">5%</button></div><div class="_ak"><button data-testid="tip-option-1" aria-label="10%" class="_bp _f7 _bm _ev _ew _k2 _gd _k3 _bc _k4 _b1 _al _dk _k5 _k6 _k7 _k8 _jj">10%</button></div><div class="_ak"><button data-testid="tip-option-2" aria-label="15%" class="_bp _f7 _bm _ev _ew _k2 _gd _k3 _bc _k4 _b1 _al _dk _k5 _k6 _k7 _k8 _jj">15%</button></div><div class="_ak"><button data-testid="tip-option-3" aria-label="20%" class="_bp _f7 _bm _ev _ew _k2 _gd _k3 _bc _k4 _b1 _al _dk _k5 _k6 _k7 _k8 _jj">20%</button></div><a data-test="tip-custom" data-testid="tip-custom" aria-label="Edit" class="_bp _f7 _bm _ev _ew _k2 _gd _k3 _bc _k4 _b1 _al _dk _k5 _k6 _k7 _k8 _jj" href="/checkout?diningMode=DELIVERY&amp;effect=&amp;marketing_vistor_id=824e180a-bd4a-4935-b0d2-2cfee258de7b&amp;mod=otherTip&amp;ps=1">Other</a></div></div><hr class="_ho _bu _hr _hp"></div><div class="_bm _al _et"><div data-testid="fare-breakdown-total-label" class="_al _bc _aq _jy">Total</div>$165.42</div></div></div><div class="_ir"><div class="_al _am _iv"><div data-testid="" class="_bp _eu _br _ev _ew _b1"><span class="_bp _eu _br _ev _ew _k9">This price was set by an algorithm using your personal data. Your location is used to help us calculate fees and savings.<br><br>Prices may be lower in store.</span></div><div data-testid="" class="_bp _eu _br _ev _ew _b1"><span class="_bp _eu _br _ev _ew _k9">If you’re not around when the delivery person arrives, they’ll leave your order at the door. By placing your order, you agree to take full responsibility for it once it’s delivered. Orders containing alcohol or other restricted items may not be eligible for leave at door and will be returned to the store if you are not available.</span></div><div data-testid="" class="_bp _eu _br _ev _ew _b1"><span class="_bp _eu _br _ev _ew _k9">From KazuNori: We take allergies seriously and have allergy procedures in place; allergens are present and cross-contamination is possible. If you have a severe allergy we recommend not ordering from our restaurant.</span></div></div></div></div>
+
+
+element.style {
+}
+._gs {
+    padding: 0px 16px;
+}
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+user agent stylesheet
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+body {
+    background: #FFFFFF;
+    color: #2F3137;
+    font-family: UberMoveText, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+html {
+    font-family: sans-serif;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+<style>
+@font-face {
+    font-family: "UberMoveText";
+    font-display: fallback;
+    src: url(/_static/276edd4275dda838.woff2) format("woff2"), url(/_static/e4a24370efb4a634.woff) format("woff");
+    font-weight: 400;
+}
+
+
+colorrgb(47, 49, 55)
+displayblock
+font-familyUberMoveText, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+height485.2px
+padding-bottom0px
+padding-left16px
+padding-right16px
+padding-top0px
+text-size-adjust100%
+unicode-bidiisolate
+width835.2px
+-webkit-font-smoothingantialiased
+-webkit-tap-highlight-colorrgba(0, 0, 0, 0)

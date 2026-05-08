@@ -1,0 +1,49 @@
+<div class="_hm _adi"><h6 data-baseweb="typo-headingxsmall" class="_eo _fd _b1 _ff _fh _uz _v0">Order total</h6><div class="_xk"><div data-test="fare-breakdown" class="_al _am _ho"><ul class="_al _am _ho"><li class="_d6 _d7 _g1 _h9 _al _fc _c6"><div class="_al _c6 _aq _aem"><div data-testid="fare-breakdown-charge-badge-subtotal-label" class="_d6 _d7 _g1 _h9 _al _am _gs">Subtotal</div></div><div data-testid="fare-breakdown-charge-badge-subtotal" class="_d6 _d7 _g1 _h9 _gs"><span class=""><span class="_af3 _act">$35.58</span>&nbsp;<span class="">$17.79</span></span></div></li><li class="_d6 _d7 _g1 _h9 _al _fc _c6"><div class="_al _c6 _aq _aem"><div data-testid="fare-breakdown-charge-badge-delivery-fee-label" class="_d6 _d7 _g1 _h9 _al _am _gs">Delivery Fee</div><div id="bui1__anchor" class="_al _c6 _hu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><title>Circle i</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm0 19c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8Zm-1.5-9v7h3v-7h-3ZM14 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor"></path></svg></div></div><div data-testid="fare-breakdown-charge-badge-delivery-fee" class="_d6 _d7 _g1 _h9 _gs"><span class="">$0.49</span></div></li><li class="_d6 _d7 _g1 _h9 _al _fc _c6"><div class="_al _c6 _aq _aem"><div data-testid="fare-breakdown-charge-badge-other-fees-label" class="_d6 _d7 _g1 _h9 _al _am _gs">Other Fees</div><a href="/checkout?mod=orderChargeInfo&amp;modctx=fare_breakdown_charge_2&amp;ps=1"><div class="_al _c6 _hu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><title>Circle i</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm0 19c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8Zm-1.5-9v7h3v-7h-3ZM14 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor"></path></svg></div></a></div><div data-testid="fare-breakdown-charge-badge-other-fees" class="_d6 _d7 _g1 _h9 _gs"><span class=""><span class="_af3 _act">$8.90</span>&nbsp;<span class="">$7.48</span></span></div></li><li class="_d6 _d7 _g1 _h9 _al _fc _c6"><div class="_al _c6 _aq _aem"><div data-testid="fare-breakdown-charge-badge-delivery-discount-label" class="_d6 _d7 _g1 _h9 _al _am _gs">Delivery Discount</div></div><div data-testid="fare-breakdown-charge-badge-delivery-discount" class="_d6 _d7 _g1 _h9 _gs"><span class=""><span class="_m2">-$0.49</span></span></div></li><li class="_d6 _d7 _g1 _h9 _al _fc _c6"><div class="_al _c6 _aq _aem"><div data-testid="fare-breakdown-charge-badge-taxes-label" class="_d6 _d7 _g1 _h9 _al _am _gs">Taxes</div></div><div data-testid="fare-breakdown-charge-badge-taxes" class="_d6 _d7 _g1 _h9 _gs"><span class="">$0.16</span></div></li></ul><div class="_al _am _ho"><hr class="_eg _b9 _fd _g6"><div data-testid="checkout-tipping-section" class="_al _am"><div class="_al"><div class="_al _c6 _dz"><h2 data-testid="checkout-tipping-title" class="_d6 _d7 _d8 _d9">Add a tip</h2><div class="spacer _12"></div><a href="/checkout?mod=tipInfo&amp;ps=1"><div class="_i5 _dq _vb"><svg width="16px" height="16px" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M11.9999 2.83398C6.91658 2.83398 2.83325 6.91732 2.83325 12.0007C2.83325 17.084 6.91658 21.1673 11.9999 21.1673C17.0833 21.1673 21.1666 17.084 21.1666 12.0007C21.1666 6.91732 17.0833 2.83398 11.9999 2.83398ZM13.2499 17.834H10.7499V11.1673H13.2499V17.834ZM11.9999 9.50065C11.0833 9.50065 10.3333 8.75065 10.3333 7.83398C10.3333 6.91732 11.0833 6.16732 11.9999 6.16732C12.9166 6.16732 13.6666 6.91732 13.6666 7.83398C13.6666 8.75065 12.9166 9.50065 11.9999 9.50065Z" fill="#5E5E5E"></path></svg></div></a></div><div class="_d6 _d7 _d8 _d9">$0.00</div></div><div class="_d6 _e2 _g1 _d9 _gp">Tips are based on your order total of $45.13 before any discounts or promotions. Learn how couriers receive tips.</div><div class="_al _bd _gk _ho _h1"><div class="_ak"><button data-testid="tip-option-0" aria-label="5%" class="_d6 _e2 _d8 _e3 _m3 _e4 _a5d _c6 _eh _b1 _al _cy _hv _a55 _hx _hy _hz">5%</button></div><div class="_ak"><button data-testid="tip-option-1" aria-label="10%" class="_d6 _e2 _d8 _e3 _m3 _e4 _a5d _c6 _eh _b1 _al _cy _hv _a55 _hx _hy _hz">10%</button></div><div class="_ak"><button data-testid="tip-option-2" aria-label="15%" class="_d6 _e2 _d8 _e3 _m3 _e4 _a5d _c6 _eh _b1 _al _cy _hv _a55 _hx _hy _hz">15%</button></div><div class="_ak"><button data-testid="tip-option-3" aria-label="20%" class="_d6 _e2 _d8 _e3 _m3 _e4 _a5d _c6 _eh _b1 _al _cy _hv _a55 _hx _hy _hz">20%</button></div><a data-test="tip-custom" data-testid="tip-custom" aria-label="Edit" class="_d6 _e2 _d8 _e3 _m3 _e4 _a5d _c6 _eh _b1 _al _cy _hv _a55 _hx _hy _hz" href="/checkout?mod=otherTip&amp;ps=1">Other</a></div></div><hr class="_eg _b9 _fd _g6"></div><div class="_d8 _al _fc"><div data-testid="fare-breakdown-total-label" class="_al _c6 _aq _aem">Total</div>$25.43</div></div></div><div class="_a8c"><div class="_al _am _e8"><div data-testid="" class="_d6 _h8 _g1 _d9 _b1"><span class="_d6 _h8 _g1 _d9 _m1">This price was set by an algorithm using your personal data. Your location is used to help us calculate fees and savings.<br><br>Prices may be lower in store.</span></div><div data-testid="" class="_d6 _h8 _g1 _d9 _b1"><span class="_d6 _h8 _g1 _d9 _m1">If you’re not around when the delivery person arrives, they’ll leave your order at the door. By placing your order, you agree to take full responsibility for it once it’s delivered. Orders containing alcohol or other restricted items may not be eligible for leave at door and will be returned to the store if you are not available.</span></div></div></div></div>
+
+
+element.style {
+}
+._hm {
+    padding: 0 16px;
+}
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+user agent stylesheet
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+body {
+    background: #FFFFFF;
+    color: #000000;
+    font-family: UberMoveText, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+html {
+    font-family: sans-serif;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+<style>
+@font-face {
+    font-family: "UberMoveText";
+    font-display: fallback;
+    src: url(/_static/276edd4275dda838.woff2) format("woff2"), url(/_static/e4a24370efb4a634.woff) format("woff");
+    font-weight: 400;
+}
+
+colorrgb(0, 0, 0)
+displayblock
+font-familyUberMoveText, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+height565.2px
+padding-bottom0px
+padding-left16px
+padding-right16px
+padding-top0px
+text-size-adjust100%
+unicode-bidiisolate
+width504.4px
+-webkit-font-smoothingantialiased
+-webkit-tap-highlight-colorrgba(0, 0, 0, 0)
