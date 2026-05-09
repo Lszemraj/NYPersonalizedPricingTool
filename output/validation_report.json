@@ -56,7 +56,12 @@
     ],
     "missing_box_keys": [],
     "manual_rgb_present": true,
-    "workflow_present": true
+    "workflow_present": true,
+    "warnings": [
+      "box_placeholder_zero_values",
+      "required_sentence_box_not_inside_disclosure_box"
+    ],
+    "warning_count": 2
   },
   {
     "capture_key": "instacart",
@@ -119,7 +124,9 @@
     "invalid_boxes_detail": [],
     "missing_box_keys": [],
     "manual_rgb_present": true,
-    "workflow_present": true
+    "workflow_present": true,
+    "warnings": [],
+    "warning_count": 0
   },
   {
     "capture_key": "postmates",
@@ -182,7 +189,9 @@
     "invalid_boxes_detail": [],
     "missing_box_keys": [],
     "manual_rgb_present": true,
-    "workflow_present": true
+    "workflow_present": true,
+    "warnings": [],
+    "warning_count": 0
   },
   {
     "capture_key": "ubereats",
@@ -245,6 +254,8 @@
     "invalid_boxes_detail": [],
     "missing_box_keys": [],
     "manual_rgb_present": true,
-    "workflow_present": true
+    "workflow_present": true,
+    "warnings": [],
+    "warning_count": 0
   }
 ]

@@ -17,7 +17,7 @@
       },
       "workflow": {
         "capture_stage": "checkout_summary",
-        "clicks_to_visible_disclosure": 0,
+        "clicks_to_visible_disclosure": 3,
         "requires_login": true,
         "requires_cart": true,
         "requires_checkout_stage": true,
@@ -85,7 +85,7 @@
       },
       "workflow": {
         "capture_stage": "checkout_summary",
-        "clicks_to_visible_disclosure": 6,
+        "clicks_to_visible_disclosure": 5,
         "requires_login": true,
         "requires_cart": true,
         "requires_checkout_stage": true,
@@ -221,7 +221,7 @@
       },
       "workflow": {
         "capture_stage": "checkout_summary",
-        "clicks_to_visible_disclosure": 0,
+        "clicks_to_visible_disclosure": 5,
         "requires_login": true,
         "requires_cart": true,
         "requires_checkout_stage": true,

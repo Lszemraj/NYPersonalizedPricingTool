@@ -66,6 +66,16 @@ SCREENSHOT_BOX_KEYS: Tuple[str, ...] = (
 
 REQUIRED_SCREENSHOT_BOX_KEYS: Tuple[str, ...] = ("disclosure_box",)
 
+# Editable thresholds for policy scores, validation warnings, and classifications.
+BOX_TOO_LARGE_FRAC_OF_VIEWPORT = 0.92
+BOX_TOO_SMALL_AREA_PX = 400
+NEAR_TOTAL_DISTANCE_WIDTH_PCT = 28.0
+SMALL_AREA_SHARE_THRESHOLD = 0.0012
+LOW_CONTRAST_THRESHOLD = 3.0
+REQ_SENTENCE_MEANINGFUL_SHARE_OF_LEGAL = 0.04
+RGB_DISTANCE_DISTINCT_THRESHOLD = 18.0
+PRICE_PROXIMITY_DISTANCE_WIDTH_PCT_GOOD = 35.0
+
 
 # ---------------------------------------------------------------------------
 # Disclosure and checkout phrase lists (case-insensitive matching)
@@ -1031,24 +1041,225 @@ def annotation_workflow_present(ann_entry: Optional[Dict[str, Any]]) -> bool:
 
 
 def wcag_from_annotation_colors(colors: Any) -> Optional[float]:
-    """Exact-channel contrast from manual disclosure text/background RGB tuples."""
+    """Backward-compatible alias: disclosure text vs disclosure background."""
+    return manual_disclosure_contrast_ratio(colors)
+
+
+def rgb_triplet(colors: Any, key: str) -> Optional[Tuple[float, float, float]]:
     if not isinstance(colors, dict):
         return None
-    fg = colors.get("disclosure_text_rgb")
-    bg = colors.get("disclosure_background_rgb")
-    if not (
-        isinstance(fg, (list, tuple))
-        and isinstance(bg, (list, tuple))
-        and len(fg) >= 3
-        and len(bg) >= 3
-    ):
+    v = colors.get(key)
+    if not isinstance(v, (list, tuple)) or len(v) < 3:
         return None
     try:
-        fr, fg_, fb = float(fg[0]), float(fg[1]), float(fg[2])
-        br, bg_, bb = float(bg[0]), float(bg[1]), float(bg[2])
-        return contrast_ratio((fr, fg_, fb), (br, bg_, bb))
+        return float(v[0]), float(v[1]), float(v[2])
     except (TypeError, ValueError):
         return None
+
+
+def manual_disclosure_contrast_ratio(colors: Any) -> Optional[float]:
+    fg = rgb_triplet(colors, "disclosure_text_rgb")
+    bg = rgb_triplet(colors, "disclosure_background_rgb")
+    if fg is None or bg is None:
+        return None
+    return contrast_ratio(fg, bg)
+
+
+def manual_required_sentence_contrast_ratio(colors: Any) -> Optional[float]:
+    fg = rgb_triplet(colors, "required_sentence_text_rgb")
+    bg = rgb_triplet(colors, "disclosure_background_rgb")
+    if fg is None or bg is None:
+        return None
+    return contrast_ratio(fg, bg)
+
+
+def manual_cta_contrast_ratio(colors: Any) -> Optional[float]:
+    fg = rgb_triplet(colors, "cta_text_rgb")
+    bg = rgb_triplet(colors, "cta_background_rgb")
+    if fg is None or bg is None:
+        return None
+    return contrast_ratio(fg, bg)
+
+
+def manual_total_price_contrast_ratio(colors: Any) -> Optional[float]:
+    fg = rgb_triplet(colors, "total_price_text_rgb")
+    bg = rgb_triplet(colors, "summary_panel_background_rgb") or rgb_triplet(
+        colors, "page_background_rgb"
+    )
+    if fg is None or bg is None:
+        return None
+    return contrast_ratio(fg, bg)
+
+
+def manual_surrounding_legal_text_contrast_ratio(colors: Any) -> Optional[float]:
+    fg = rgb_triplet(colors, "surrounding_legal_text_rgb")
+    bg = rgb_triplet(colors, "disclosure_background_rgb")
+    if fg is None or bg is None:
+        return None
+    return contrast_ratio(fg, bg)
+
+
+def rgb_distance(a: Optional[Tuple[float, float, float]], b: Optional[Tuple[float, float, float]]) -> Optional[float]:
+    if a is None or b is None:
+        return None
+    return math.sqrt(sum((a[i] - b[i]) ** 2 for i in range(3)))
+
+
+def safe_area(rect: Optional[Tuple[int, int, int, int]]) -> Optional[int]:
+    if rect is None:
+        return None
+    w, h = rect[2], rect[3]
+    if w <= 0 or h <= 0:
+        return None
+    return w * h
+
+
+def safe_ratio(numerator: Optional[float], denominator: Optional[float]) -> Optional[float]:
+    if numerator is None or denominator is None:
+        return None
+    try:
+        d = float(denominator)
+        if d == 0:
+            return None
+        return float(numerator) / d
+    except (TypeError, ValueError):
+        return None
+
+
+def box_center_distance(rect_a: Tuple[int, int, int, int], rect_b: Tuple[int, int, int, int]) -> float:
+    return euclidean_center_distance(rect_a, rect_b)
+
+
+def vertical_gap(lower: Tuple[int, int, int, int], upper: Tuple[int, int, int, int]) -> float:
+    """Signed vertical gap: positive when lower's top is below upper's bottom."""
+    return vertical_gap_below_upper(lower, upper)
+
+
+def pct(value: Optional[float], denominator: Optional[float]) -> Optional[float]:
+    r = safe_ratio(value, denominator)
+    if r is None:
+        return None
+    return 100.0 * r
+
+
+def pick_total_rect(rects: Dict[str, Tuple[int, int, int, int]]) -> Optional[Tuple[int, int, int, int]]:
+    tp = rects.get("total_price_box")
+    tr = rects.get("total_row_box")
+    if tp is not None and safe_area(tp):
+        return tp
+    if tr is not None and safe_area(tr):
+        return tr
+    return None
+
+
+def confidence_level_html(disclosure_found: bool, phrase: Any, html_parsed_ok: bool) -> str:
+    if not html_parsed_ok:
+        return "low"
+    if disclosure_found and phrase:
+        return "high"
+    return "medium"
+
+
+def confidence_level_placement(
+    screenshot_loaded: bool,
+    disclosure_ok: bool,
+    total_ok: bool,
+    cta_ok: bool,
+) -> str:
+    if screenshot_loaded and disclosure_ok and total_ok and cta_ok:
+        return "high"
+    if screenshot_loaded and disclosure_ok:
+        return "medium"
+    return "low"
+
+
+def confidence_level_contrast(manual_cr: Any, parsed_cr: Any) -> str:
+    has_manual = False
+    try:
+        has_manual = manual_cr is not None and str(manual_cr) != "nan" and float(manual_cr) > 0
+    except (TypeError, ValueError):
+        pass
+    has_parsed = False
+    try:
+        has_parsed = parsed_cr is not None and str(parsed_cr) != "nan" and float(parsed_cr) > 0
+    except (TypeError, ValueError):
+        pass
+    if has_manual:
+        return "high"
+    if has_parsed:
+        return "medium"
+    return "low"
+
+
+def confidence_level_friction(workflow_present: bool, clicks: Any) -> str:
+    if not workflow_present:
+        return "low"
+    if clicks is not None:
+        return "high"
+    return "medium"
+
+
+def confidence_level_overall(
+    html_lvl: str,
+    placement_lvl: str,
+    contrast_lvl: str,
+    friction_lvl: str,
+) -> str:
+    def rank(s: str) -> int:
+        return {"high": 3, "medium": 2, "low": 1}.get(s, 1)
+
+    if html_lvl == "high" and placement_lvl == "high" and contrast_lvl == "high" and friction_lvl == "high":
+        return "high"
+    if html_lvl == "high":
+        rest = [placement_lvl, contrast_lvl, friction_lvl]
+        if any(rank(x) >= 2 for x in rest):
+            return "medium"
+    return "low"
+
+
+def append_geometry_validation_warnings(
+    warnings: List[str],
+    rects: Dict[str, Tuple[int, int, int, int]],
+    shot_w: Optional[int],
+    shot_h: Optional[int],
+    boxes_raw: Optional[Dict[str, Any]],
+    fold_y_from_ann: Optional[int],
+) -> None:
+    vw = float(shot_w or 0) * float(shot_h or 0)
+    if isinstance(boxes_raw, dict):
+        for key, raw in boxes_raw.items():
+            if isinstance(raw, (list, tuple)) and len(raw) == 4:
+                try:
+                    if int(raw[0]) == int(raw[1]) == int(raw[2]) == int(raw[3]) == 0:
+                        warnings.append("box_placeholder_zero_values")
+                except (TypeError, ValueError):
+                    pass
+
+    if fold_y_from_ann is None and shot_w and shot_h:
+        warnings.append("fold_y_missing_or_defaulted")
+
+    if not shot_w or not shot_h:
+        return
+
+    for name, rect in rects.items():
+        x, y, w, h = rect
+        if x < 0 or y < 0 or x + w > shot_w + 1 or y + h > shot_h + 1:
+            warnings.append("box_outside_image_bounds")
+        if vw > 0:
+            frac = (w * h) / vw
+            if frac >= BOX_TOO_LARGE_FRAC_OF_VIEWPORT:
+                warnings.append("box_too_large_pct_of_viewport")
+        if w * h < BOX_TOO_SMALL_AREA_PX:
+            warnings.append("box_too_small_to_contain_text")
+
+    dt = rects.get("disclosure_box")
+    rs = rects.get("required_sentence_box")
+    if dt is not None and rs is not None:
+        ix, iy, iw, ih = rs
+        ox, oy, ow, oh = dt
+        inside = ix >= ox and iy >= oy and ix + iw <= ox + ow and iy + ih <= oy + oh
+        if not inside:
+            warnings.append("required_sentence_box_not_inside_disclosure_box")
 
 
 def visual_placement_confidence(
@@ -1105,6 +1316,8 @@ class ScreenshotAnnotationContext:
     screenshot_loaded: bool
     screenshot_width: Optional[int]
     screenshot_height: Optional[int]
+    viewport_width_px: Optional[int]
+    viewport_height_px: Optional[int]
     fold_y_px: Optional[int]
     rects: Dict[str, Tuple[int, int, int, int]]
     invalid_boxes: List[str]
@@ -1147,15 +1360,51 @@ def load_screenshot_annotation_context(
     }
 
     fold_y_px: Optional[int] = None
+    viewport_w: Optional[int] = None
+    viewport_h: Optional[int] = None
     if isinstance(ann_entry, dict):
         ss_meta = ann_entry.get("screenshot")
-        if isinstance(ss_meta, dict) and ss_meta.get("fold_y_px") is not None:
-            try:
-                fold_y_px = int(ss_meta["fold_y_px"])
-            except (TypeError, ValueError):
-                fold_y_px = None
+        if isinstance(ss_meta, dict):
+            if ss_meta.get("fold_y_px") is not None:
+                try:
+                    fold_y_px = int(ss_meta["fold_y_px"])
+                except (TypeError, ValueError):
+                    fold_y_px = None
+            for vk, dst in (
+                ("viewport_width_px", "viewport_w"),
+                ("viewport_height_px", "viewport_h"),
+            ):
+                if ss_meta.get(vk) is not None:
+                    try:
+                        if vk == "viewport_width_px":
+                            viewport_w = int(ss_meta[vk])
+                        else:
+                            viewport_h = int(ss_meta[vk])
+                    except (TypeError, ValueError):
+                        pass
+
+    if viewport_w is None:
+        viewport_w = shot_w
+    if viewport_h is None:
+        viewport_h = shot_h
 
     colors_obj = ann_entry.get("colors") if isinstance(ann_entry, dict) else None
+
+    validation_warnings: List[str] = []
+    if not annotation_manual_colors_present(colors_obj):
+        validation_warnings.append("rgb_missing")
+    if not annotation_workflow_present(ann_entry):
+        validation_warnings.append("workflow_missing")
+
+    boxes_raw = ann_entry.get("boxes") if isinstance(ann_entry, dict) else None
+    append_geometry_validation_warnings(
+        validation_warnings,
+        rects,
+        shot_w,
+        shot_h,
+        boxes_raw if isinstance(boxes_raw, dict) else None,
+        fold_y_px,
+    )
 
     validation_dict: Dict[str, Any] = {
         "capture_key": capture_key,
@@ -1180,6 +1429,8 @@ def load_screenshot_annotation_context(
         "missing_box_keys": missing_box_keys,
         "manual_rgb_present": annotation_manual_colors_present(colors_obj),
         "workflow_present": annotation_workflow_present(ann_entry),
+        "warnings": sorted(set(validation_warnings)),
+        "warning_count": len(set(validation_warnings)),
     }
 
     ctx = ScreenshotAnnotationContext(
@@ -1191,6 +1442,8 @@ def load_screenshot_annotation_context(
         screenshot_loaded=screenshot_loaded,
         screenshot_width=shot_w,
         screenshot_height=shot_h,
+        viewport_width_px=viewport_w,
+        viewport_height_px=viewport_h,
         fold_y_px=fold_y_px,
         rects=rects,
         invalid_boxes=invalid_box_msgs,
@@ -1278,6 +1531,10 @@ def rect_contains(inner: Tuple[int, int, int, int], outer: Tuple[int, int, int, 
     ix, iy, iw, ih = inner
     ox, oy, ow, oh = outer
     return ix >= ox and iy >= oy and ix + iw <= ox + ow and iy + ih <= oy + oh
+
+
+def box_contains(inner: Tuple[int, int, int, int], outer: Tuple[int, int, int, int]) -> bool:
+    return rect_contains(inner, outer)
 
 
 def euclidean_center_distance(a: Tuple[int, int, int, int], b: Tuple[int, int, int, int]) -> float:
@@ -1375,6 +1632,189 @@ def score_friction_0_10(row: Dict[str, Any]) -> float:
     return max(0.0, min(10.0, s))
 
 
+def manual_classification_dict(ann_entry: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not isinstance(ann_entry, dict):
+        return None
+    mc = ann_entry.get("manual_classification")
+    return mc if isinstance(mc, dict) else None
+
+
+def score_pre_action_visibility_0_10(row: Dict[str, Any], mc: Optional[Dict[str, Any]]) -> float:
+    s = 0.0
+    below_vis = bool(row.get("disclosure_below_cta_screenshot"))
+    below_manual = bool(mc and mc.get("disclosure_appears_below_primary_cta"))
+    before_manual = bool(mc and mc.get("disclosure_appears_before_primary_cta"))
+    penalized = below_vis or (below_manual and not before_manual)
+
+    before_dom_ok = row.get("disclosure_before_cta_dom") is True
+    ct_ok = bool(row.get("primary_cta_box_valid"))
+    below_cta_vis_unknown = row.get("disclosure_below_cta_screenshot") is None
+    screenshot_before_cta = ct_ok and (
+        row.get("disclosure_below_cta_screenshot") is False or below_cta_vis_unknown
+    )
+    if not penalized:
+        if before_manual or screenshot_before_cta:
+            s += 3.0
+        if before_dom_ok:
+            s += 2.0
+
+    scroll_req = row.get("requires_scroll_to_see_disclosure")
+    if scroll_req is False:
+        s += 2.0
+    clicks = row.get("clicks_to_visible")
+    if clicks == 0:
+        s += 2.0
+    if row.get("disclosure_fully_above_fold"):
+        s += 1.0
+
+    return max(0.0, min(10.0, s))
+
+
+def score_price_proximity_0_10(row: Dict[str, Any]) -> float:
+    s = 0.0
+    if row.get("same_container_as_total") or row.get("disclosure_inside_summary_panel"):
+        s += 3.0
+
+    dist_pct = row.get("distance_disclosure_to_total_as_viewport_width_pct")
+    try:
+        dpf = float(dist_pct) if dist_pct is not None and str(dist_pct) != "nan" else None
+    except (TypeError, ValueError):
+        dpf = None
+    if dpf is not None and dpf < PRICE_PROXIMITY_DISTANCE_WIDTH_PCT_GOOD:
+        s += 3.0
+
+    if row.get("disclosure_inside_summary_panel") and not row.get("disclosure_below_total_screenshot"):
+        s += 2.0
+    elif row.get("disclosure_inside_summary_panel") and row.get("disclosure_below_total_screenshot"):
+        s += 1.0
+
+    modal_away = row.get("inside_modal") and not row.get("same_container_as_total")
+    if not modal_away:
+        s += 2.0
+
+    return max(0.0, min(10.0, s))
+
+
+def score_legal_burial_0_10(row: Dict[str, Any], colors: Any) -> float:
+    s = 0.0
+    inside_legal = row.get("disclosure_inside_legal_disclaimer_block")
+    if inside_legal is False:
+        s += 3.0
+    elif inside_legal is True:
+        pass
+
+    nd = row.get("number_of_disclaimer_paragraphs_before_disclosure")
+    if nd == 0:
+        s += 2.0
+
+    if row.get("required_sentence_standalone"):
+        s += 2.0
+
+    rs_share = row.get("required_sentence_area_share_of_legal_block")
+    try:
+        rssh = float(rs_share) if rs_share is not None and str(rs_share) != "nan" else None
+    except (TypeError, ValueError):
+        rssh = None
+    if rssh is not None and rssh >= REQ_SENTENCE_MEANINGFUL_SHARE_OF_LEGAL:
+        s += 2.0
+    elif inside_legal is True and rssh is not None and rssh < REQ_SENTENCE_MEANINGFUL_SHARE_OF_LEGAL / 2:
+        s -= 2.0
+
+    d_rgb = rgb_triplet(colors, "disclosure_text_rgb")
+    sl_rgb = rgb_triplet(colors, "surrounding_legal_text_rgb")
+    dist_dl = rgb_distance(d_rgb, sl_rgb)
+    if dist_dl is not None and dist_dl >= RGB_DISTANCE_DISTINCT_THRESHOLD:
+        s += 1.0
+
+    return max(0.0, min(10.0, s))
+
+
+def classify_top_policy_concern(row: Dict[str, Any], mc: Optional[Dict[str, Any]]) -> Tuple[str, str]:
+    if not row.get("disclosure_found_html"):
+        return "not_found", "No disclosure phrase matched in the HTML/CSS capture."
+
+    vis_ok = bool(row.get("screenshot_loaded")) and row.get("disclosure_area_px") is not None
+    if not vis_ok:
+        return (
+            "insufficient_visual_data",
+            "Screenshot missing or disclosure box not usable; visual placement metrics unavailable.",
+        )
+
+    below_cta = bool(row.get("disclosure_below_cta_screenshot")) or (
+        mc and mc.get("disclosure_appears_below_primary_cta") and not mc.get("disclosure_appears_before_primary_cta")
+    )
+    if below_cta:
+        return "below_cta", "Disclosure is below the primary CTA in screenshot or manual classification."
+
+    if row.get("requires_scroll_to_see_disclosure") is True:
+        return "requires_scroll", "Workflow notes indicate scrolling was required to see the disclosure."
+
+    if row.get("inside_modal") and row.get("disclosure_inside_summary_panel") is not True:
+        return (
+            "modal_separate_from_price",
+            "Disclosure appears modal-like in DOM and is not inside the annotated order summary panel.",
+        )
+
+    if row.get("disclosure_inside_legal_disclaimer_block") and (
+        (row.get("number_of_disclaimer_paragraphs_before_disclosure") or 0) >= 2
+        or (row.get("required_sentence_area_share_of_legal_block") or 1.0) < REQ_SENTENCE_MEANINGFUL_SHARE_OF_LEGAL
+    ):
+        return "buried_in_legal_block", "Disclosure sits inside the legal disclaimer region with low relative salience."
+
+    cr = row.get("wcag_contrast_ratio")
+    try:
+        cr_f = float(cr) if cr is not None and str(cr) != "nan" else None
+    except (TypeError, ValueError):
+        cr_f = None
+    if cr_f is not None and cr_f < LOW_CONTRAST_THRESHOLD:
+        return "low_contrast", f"Contrast ratio {cr_f:.2f} is below the configured salience threshold."
+
+    share = row.get("disclosure_area_share_of_viewport")
+    try:
+        sh = float(share) if share is not None and str(share) != "nan" else None
+    except (TypeError, ValueError):
+        sh = None
+    if sh is not None and sh < SMALL_AREA_SHARE_THRESHOLD:
+        return "low_area_share", "Disclosure occupies a very small fraction of the screenshot viewport."
+
+    dist_pct = row.get("distance_disclosure_to_total_as_viewport_width_pct")
+    try:
+        dpf = float(dist_pct) if dist_pct is not None and str(dist_pct) != "nan" else None
+    except (TypeError, ValueError):
+        dpf = None
+    if dpf is not None and dpf > NEAR_TOTAL_DISTANCE_WIDTH_PCT and not row.get("same_container_as_total"):
+        return "weak_price_proximity", "Disclosure centroid is far from the annotated total in normalized coordinates."
+
+    return "no_major_issue_detected", "No prioritized policy warning fired under the deterministic rule stack."
+
+
+def append_dom_visual_validation_warnings(
+    warnings: List[str],
+    *,
+    disclosure_found: bool,
+    inside_modal: bool,
+    disclosure_type: str,
+    modal_rect_ok: bool,
+    total_rect_ok: bool,
+    cta_rect_ok: bool,
+    disclosure_inside_summary: Optional[bool],
+    mc: Optional[Dict[str, Any]],
+) -> None:
+    if inside_modal and not modal_rect_ok:
+        warnings.append("modal_box_missing_for_modal_disclosure")
+    if not inside_modal and modal_rect_ok:
+        warnings.append("modal_box_present_for_non_modal_disclosure")
+
+    if mc and mc.get("disclosure_same_panel_as_total") and disclosure_inside_summary is False:
+        warnings.append("disclosure_box_not_inside_summary_panel_but_manual_says_same_panel")
+
+    inline_like = disclosure_type in ("inline_order_summary", "inline_legal_disclaimer", "tooltip_or_info_icon")
+    if disclosure_found and inline_like and not total_rect_ok:
+        warnings.append("total_box_missing_for_inline_disclosure")
+    if disclosure_found and not cta_rect_ok:
+        warnings.append("cta_box_missing")
+
+
 def overall_simple_score(p: float, pl: float, f: float) -> float:
     return max(0.0, min(10.0, (p + pl + f) / 3.0))
 
@@ -1415,6 +1855,7 @@ def analyze_capture(
     screenshot_pixel_stats: bool,
     write_annotated: bool,
     out_dir: Path,
+    validation_sink: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     # OCR (--enable-ocr) is intentionally unused except as a CLI placeholder; screenshots are never
     # text-extracted unless a future OCR implementation is wired in.
@@ -1539,19 +1980,30 @@ def analyze_capture(
     }
 
     ann_entry = viz_ctx.ann_entry if isinstance(viz_ctx.ann_entry, dict) else None
+    mc = manual_classification_dict(ann_entry)
+    colors_obj = ann_entry.get("colors") if ann_entry else None
+    html_parsed_ok = bool(html_part.strip())
+    html_css_contrast_ratio: Optional[float] = wcag_f
     cap_key = viz_ctx.capture_key
 
     rects = viz_ctx.rects
     shot_w = viz_ctx.screenshot_width
     shot_h = viz_ctx.screenshot_height
+    vw_meta = viz_ctx.viewport_width_px or shot_w
+    vh_meta = viz_ctx.viewport_height_px or shot_h
     img = viz_ctx.image
 
     dt = rects.get("disclosure_box")
-    tt = rects.get("total_price_box") or rects.get("total_row_box")
+    tt = pick_total_rect(rects)
     ct = rects.get("primary_cta_box")
     st = rects.get("summary_panel_box")
     legal_b = rects.get("legal_disclaimer_block_box")
     mt = rects.get("modal_box")
+    rs_rect = rects.get("required_sentence_box")
+
+    total_rect_ok = tt is not None
+    cta_rect_ok = ct is not None
+    modal_rect_ok = mt is not None
 
     vis_conf, pl_conf = visual_placement_confidence(
         viz_ctx.screenshot_loaded,
@@ -1568,21 +2020,56 @@ def analyze_capture(
     if shot_h:
         fold_y_eff = viz_ctx.fold_y_px if viz_ctx.fold_y_px is not None else int(shot_h * 0.5)
 
+    md_cr = manual_disclosure_contrast_ratio(colors_obj)
+    mr_cr = manual_required_sentence_contrast_ratio(colors_obj)
+    mc_cr = manual_cta_contrast_ratio(colors_obj)
+    mt_cr = manual_total_price_contrast_ratio(colors_obj)
+    ms_cr = manual_surrounding_legal_text_contrast_ratio(colors_obj)
+    d_tt_rgb = rgb_distance(rgb_triplet(colors_obj, "disclosure_text_rgb"), rgb_triplet(colors_obj, "total_price_text_rgb"))
+    rs_tt_rgb = rgb_distance(
+        rgb_triplet(colors_obj, "required_sentence_text_rgb"), rgb_triplet(colors_obj, "total_price_text_rgb")
+    )
+    d_sl_rgb = rgb_distance(
+        rgb_triplet(colors_obj, "disclosure_text_rgb"), rgb_triplet(colors_obj, "surrounding_legal_text_rgb")
+    )
+    rs_sl_rgb = rgb_distance(
+        rgb_triplet(colors_obj, "required_sentence_text_rgb"),
+        rgb_triplet(colors_obj, "surrounding_legal_text_rgb"),
+    )
+
+    WORKFLOW_EXPORT_KEYS: Tuple[str, ...] = (
+        "capture_stage",
+        "clicks_to_visible_disclosure",
+        "requires_login",
+        "requires_cart",
+        "requires_checkout_stage",
+        "requires_scroll_to_see_disclosure",
+        "modal_appeared_automatically",
+        "disclosure_hidden_behind_tooltip",
+        "user_had_to_open_fee_details",
+        "user_had_to_open_terms_or_privacy_link",
+    )
+
     null_placements: Dict[str, Any] = {
         "screenshot_path": viz_ctx.screenshot_path_display,
         "screenshot_width": shot_w,
         "screenshot_height": shot_h,
+        "viewport_width_px_effective": vw_meta,
+        "viewport_height_px_effective": vh_meta,
         "fold_y_px_used": fold_y_eff,
+        "primary_cta_box_valid": cta_rect_ok,
         "disclosure_box_x": None,
         "disclosure_box_y": None,
         "disclosure_box_width": None,
         "disclosure_box_height": None,
         "disclosure_area_px": None,
         "disclosure_area_share_of_viewport": None,
+        "disclosure_area_pct_of_viewport": None,
         "disclosure_above_fold": None,
         "disclosure_fully_above_fold": None,
         "disclosure_below_total_screenshot": None,
         "disclosure_below_cta_screenshot": None,
+        "disclosure_below_primary_cta_screenshot": None,
         "disclosure_inside_summary_panel": None,
         "disclosure_inside_legal_disclaimer_block": None,
         "disclosure_inside_modal_box": None,
@@ -1594,9 +2081,6 @@ def analyze_capture(
         "screenshot_disclosure_luminance_p10": None,
         "screenshot_disclosure_luminance_p50": None,
         "screenshot_disclosure_luminance_p90": None,
-        "clicks_to_visible": None,
-        "requires_login": None,
-        "checkout_stage": None,
         "annotated_screenshot_path": None,
         "box_format_used": BOX_FORMAT,
         "screenshot_loaded": viz_ctx.screenshot_loaded,
@@ -1605,14 +2089,100 @@ def analyze_capture(
         "invalid_boxes": "; ".join(viz_ctx.invalid_boxes),
         "missing_boxes": "; ".join(viz_ctx.missing_boxes),
         "visual_metrics_confidence": vis_conf,
-        "placement_metrics_confidence": pl_conf,
+        "placement_geometry_confidence_index": pl_conf,
         "manual_rgb_values_present": viz_ctx.colors_present,
         "workflow_metadata_present": viz_ctx.workflow_present,
-        "annotation_wcag_contrast_ratio": wcag_from_annotation_colors(
-            ann_entry.get("colors") if ann_entry else None
-        ),
+        "manual_disclosure_contrast_ratio": md_cr,
+        "manual_required_sentence_contrast_ratio": mr_cr,
+        "manual_cta_contrast_ratio": mc_cr,
+        "manual_total_price_contrast_ratio": mt_cr,
+        "manual_surrounding_legal_text_contrast_ratio": ms_cr,
+        "disclosure_to_total_price_color_distance_rgb": d_tt_rgb,
+        "required_sentence_to_total_price_color_distance_rgb": rs_tt_rgb,
+        "disclosure_to_surrounding_legal_text_color_distance_rgb": d_sl_rgb,
+        "required_sentence_to_surrounding_legal_text_color_distance_rgb": rs_sl_rgb,
+        "annotation_wcag_contrast_ratio": md_cr,
+        "required_sentence_box_x": None,
+        "required_sentence_box_y": None,
+        "required_sentence_box_width": None,
+        "required_sentence_box_height": None,
+        "required_sentence_area_px": None,
+        "required_sentence_area_share_of_viewport": None,
+        "required_sentence_area_pct_of_viewport": None,
+        "required_sentence_above_fold": None,
+        "required_sentence_fully_above_fold": None,
+        "required_sentence_inside_legal_disclaimer_block": None,
+        "required_sentence_inside_modal_box": None,
+        "required_sentence_below_cta_screenshot": None,
+        "required_sentence_above_cta_screenshot": None,
+        "required_sentence_below_total_screenshot": None,
+        "required_sentence_distance_to_total_px": None,
+        "required_sentence_distance_to_cta_px": None,
+        "required_sentence_vertical_gap_to_total_px": None,
+        "required_sentence_vertical_gap_to_cta_px": None,
+        "required_sentence_area_share_of_legal_block": None,
+        "disclosure_area_to_total_price_area_ratio": None,
+        "required_sentence_area_to_total_price_area_ratio": None,
+        "cta_area_to_disclosure_area_ratio": None,
+        "cta_area_to_required_sentence_area_ratio": None,
+        "legal_block_area_to_disclosure_area_ratio": None,
+        "legal_block_area_to_required_sentence_area_ratio": None,
+        "modal_area_to_disclosure_area_ratio": None,
+        "modal_area_to_required_sentence_area_ratio": None,
+        "distance_disclosure_to_total_as_viewport_width_pct": None,
+        "distance_disclosure_to_cta_as_viewport_width_pct": None,
+        "distance_required_sentence_to_total_as_viewport_width_pct": None,
+        "distance_required_sentence_to_cta_as_viewport_width_pct": None,
+        "vertical_gap_total_to_disclosure_as_viewport_height_pct": None,
+        "vertical_gap_cta_to_disclosure_as_viewport_height_pct": None,
+        "vertical_gap_total_to_required_sentence_as_viewport_height_pct": None,
+        "vertical_gap_cta_to_required_sentence_as_viewport_height_pct": None,
+        "validation_warning_count": None,
+        "validation_warnings": None,
+        "pre_action_visibility_score_0_to_10": None,
+        "price_proximity_score_0_to_10": None,
+        "legal_burial_score_0_to_10": None,
+        "top_policy_concern": None,
+        "top_policy_concern_explanation": None,
+        "html_metrics_confidence": None,
+        "placement_metrics_confidence": None,
+        "contrast_metrics_confidence": None,
+        "friction_metrics_confidence": None,
+        "overall_evidence_confidence": None,
+        "contrast_source": None,
     }
+
+    for wfk in WORKFLOW_EXPORT_KEYS:
+        null_placements[wfk] = None
+    null_placements["clicks_to_visible"] = None
+    null_placements["checkout_stage"] = None
+
     row.update(null_placements)
+
+    if isinstance(ann_entry, dict):
+        wf = ann_entry.get("workflow")
+        if isinstance(wf, dict):
+            for wfk in WORKFLOW_EXPORT_KEYS:
+                row[wfk] = wf.get(wfk)
+            row["clicks_to_visible"] = wf.get("clicks_to_visible_disclosure")
+            row["checkout_stage"] = wf.get("capture_stage")
+        legacy = ann_entry.get("manual")
+        if isinstance(legacy, dict):
+            row["clicks_to_visible"] = row.get("clicks_to_visible") if row.get("clicks_to_visible") is not None else legacy.get(
+                "clicks_to_visible"
+            )
+            row["requires_login"] = legacy.get("requires_login") if legacy.get("requires_login") is not None else row.get(
+                "requires_login"
+            )
+            row["checkout_stage"] = row.get("checkout_stage") or legacy.get("checkout_stage")
+
+    if html_css_contrast_ratio is not None:
+        row["contrast_source"] = "computed_or_parsed_css"
+    elif md_cr is not None:
+        row["wcag_contrast_ratio"] = md_cr
+        row["contrast_source"] = "manual_rgb"
+    else:
+        row["contrast_source"] = "missing"
 
     if screenshot_pixel_stats:
         lum = luminance_percentiles_crop(img, dt) if img is not None and dt is not None else None
@@ -1620,6 +2190,9 @@ def analyze_capture(
             row["screenshot_disclosure_luminance_p10"] = lum["luminance_p10"]
             row["screenshot_disclosure_luminance_p50"] = lum["luminance_p50"]
             row["screenshot_disclosure_luminance_p90"] = lum["luminance_p90"]
+
+    vw_eff = vw_meta
+    vh_eff = vh_meta
 
     if dt is not None and shot_w and shot_h:
         dx, dy, dw, dh = dt
@@ -1640,6 +2213,7 @@ def analyze_capture(
                 "disclosure_box_height": dh,
                 "disclosure_area_px": area,
                 "disclosure_area_share_of_viewport": share,
+                "disclosure_area_pct_of_viewport": pct(float(area), float(shot_w * shot_h)),
                 "disclosure_above_fold": (
                     dy < fold_y_eff if fold_y_eff is not None and shot_h else None
                 ),
@@ -1655,6 +2229,8 @@ def analyze_capture(
             row["disclosure_below_cta_screenshot"] = vertical_gap_below_upper(dt, ct) > 0
             row["distance_disclosure_to_cta_px"] = euclidean_center_distance(dt, ct)
             row["vertical_gap_disclosure_cta_px"] = vertical_gap_below_upper(dt, ct)
+        row["disclosure_below_primary_cta_screenshot"] = row.get("disclosure_below_cta_screenshot")
+
         if st is not None:
             row["disclosure_inside_summary_panel"] = rect_contains(dt, st)
         if legal_b is not None:
@@ -1663,6 +2239,163 @@ def analyze_capture(
             row["disclosure_inside_modal_box"] = rect_contains(dt, mt)
             marea = mt[2] * mt[3]
             row["modal_area_share_of_viewport"] = marea / float(shot_w * shot_h)
+
+        if vw_eff:
+            row["distance_disclosure_to_total_as_viewport_width_pct"] = pct(
+                row["distance_disclosure_to_total_px"], vw_eff
+            )
+            row["distance_disclosure_to_cta_as_viewport_width_pct"] = pct(
+                row["distance_disclosure_to_cta_px"], vw_eff
+            )
+        if vh_eff:
+            row["vertical_gap_total_to_disclosure_as_viewport_height_pct"] = pct(
+                abs(row["vertical_gap_disclosure_total_px"]) if row["vertical_gap_disclosure_total_px"] is not None else None,
+                vh_eff,
+            )
+            row["vertical_gap_cta_to_disclosure_as_viewport_height_pct"] = pct(
+                abs(row["vertical_gap_disclosure_cta_px"]) if row["vertical_gap_disclosure_cta_px"] is not None else None,
+                vh_eff,
+            )
+
+    disc_area_v = safe_area(dt)
+    total_area_v = safe_area(tt)
+    rs_area_v = safe_area(rs_rect)
+    cta_area_v = safe_area(ct)
+    legal_area_v = safe_area(legal_b)
+    modal_area_v = safe_area(mt)
+
+    if rs_rect is not None and shot_w and shot_h:
+        rx, ry, rw, rh = rs_rect
+        rsa = rw * rh
+        rss = rsa / float(shot_w * shot_h) if shot_w * shot_h else None
+        rs_fully_above = None
+        if fold_y_eff is not None:
+            rs_fully_above = ry >= 0 and ry + rh <= fold_y_eff
+        elif shot_h:
+            rs_fully_above = False
+        row.update(
+            {
+                "required_sentence_box_x": rx,
+                "required_sentence_box_y": ry,
+                "required_sentence_box_width": rw,
+                "required_sentence_box_height": rh,
+                "required_sentence_area_px": rsa,
+                "required_sentence_area_share_of_viewport": rss,
+                "required_sentence_area_pct_of_viewport": pct(float(rsa), float(shot_w * shot_h)),
+                "required_sentence_above_fold": ry < fold_y_eff if fold_y_eff is not None and shot_h else None,
+                "required_sentence_fully_above_fold": rs_fully_above,
+            }
+        )
+        if tt is not None:
+            row["required_sentence_below_total_screenshot"] = vertical_gap_below_upper(rs_rect, tt) > 0
+            row["required_sentence_distance_to_total_px"] = euclidean_center_distance(rs_rect, tt)
+            row["required_sentence_vertical_gap_to_total_px"] = vertical_gap_below_upper(rs_rect, tt)
+        if ct is not None:
+            row["required_sentence_below_cta_screenshot"] = vertical_gap_below_upper(rs_rect, ct) > 0
+            row["required_sentence_above_cta_screenshot"] = bool(ry + rh <= ct[1])
+            row["required_sentence_distance_to_cta_px"] = euclidean_center_distance(rs_rect, ct)
+            row["required_sentence_vertical_gap_to_cta_px"] = vertical_gap_below_upper(rs_rect, ct)
+        if legal_b is not None:
+            row["required_sentence_inside_legal_disclaimer_block"] = rect_contains(rs_rect, legal_b)
+        if mt is not None:
+            row["required_sentence_inside_modal_box"] = rect_contains(rs_rect, mt)
+
+        if legal_area_v:
+            row["required_sentence_area_share_of_legal_block"] = safe_ratio(float(rsa), float(legal_area_v))
+
+        if vw_eff:
+            row["distance_required_sentence_to_total_as_viewport_width_pct"] = pct(
+                row["required_sentence_distance_to_total_px"], vw_eff
+            )
+            row["distance_required_sentence_to_cta_as_viewport_width_pct"] = pct(
+                row["required_sentence_distance_to_cta_px"], vw_eff
+            )
+        if vh_eff:
+            row["vertical_gap_total_to_required_sentence_as_viewport_height_pct"] = pct(
+                abs(row["required_sentence_vertical_gap_to_total_px"])
+                if row["required_sentence_vertical_gap_to_total_px"] is not None
+                else None,
+                vh_eff,
+            )
+            row["vertical_gap_cta_to_required_sentence_as_viewport_height_pct"] = pct(
+                abs(row["required_sentence_vertical_gap_to_cta_px"])
+                if row["required_sentence_vertical_gap_to_cta_px"] is not None
+                else None,
+                vh_eff,
+            )
+
+    row["disclosure_area_to_total_price_area_ratio"] = safe_ratio(
+        float(disc_area_v) if disc_area_v else None,
+        float(total_area_v) if total_area_v else None,
+    )
+    row["required_sentence_area_to_total_price_area_ratio"] = safe_ratio(
+        float(rs_area_v) if rs_area_v else None,
+        float(total_area_v) if total_area_v else None,
+    )
+    row["cta_area_to_disclosure_area_ratio"] = safe_ratio(
+        float(cta_area_v) if cta_area_v else None,
+        float(disc_area_v) if disc_area_v else None,
+    )
+    row["cta_area_to_required_sentence_area_ratio"] = safe_ratio(
+        float(cta_area_v) if cta_area_v else None,
+        float(rs_area_v) if rs_area_v else None,
+    )
+    row["legal_block_area_to_disclosure_area_ratio"] = safe_ratio(
+        float(legal_area_v) if legal_area_v else None,
+        float(disc_area_v) if disc_area_v else None,
+    )
+    row["legal_block_area_to_required_sentence_area_ratio"] = safe_ratio(
+        float(legal_area_v) if legal_area_v else None,
+        float(rs_area_v) if rs_area_v else None,
+    )
+    row["modal_area_to_disclosure_area_ratio"] = safe_ratio(
+        float(modal_area_v) if modal_area_v else None,
+        float(disc_area_v) if disc_area_v else None,
+    )
+    row["modal_area_to_required_sentence_area_ratio"] = safe_ratio(
+        float(modal_area_v) if modal_area_v else None,
+        float(rs_area_v) if rs_area_v else None,
+    )
+
+    row["html_metrics_confidence"] = confidence_level_html(
+        bool(row.get("disclosure_found_html")), row.get("disclosure_matched_phrase"), html_parsed_ok
+    )
+    row["placement_metrics_confidence"] = confidence_level_placement(
+        viz_ctx.screenshot_loaded,
+        dt is not None,
+        tt is not None,
+        ct is not None,
+    )
+    row["contrast_metrics_confidence"] = confidence_level_contrast(md_cr, html_css_contrast_ratio)
+    row["friction_metrics_confidence"] = confidence_level_friction(
+        viz_ctx.workflow_present, row.get("clicks_to_visible")
+    )
+    row["overall_evidence_confidence"] = confidence_level_overall(
+        row["html_metrics_confidence"],
+        row["placement_metrics_confidence"],
+        row["contrast_metrics_confidence"],
+        row["friction_metrics_confidence"],
+    )
+
+    extra_warn: List[str] = []
+    append_dom_visual_validation_warnings(
+        extra_warn,
+        disclosure_found=bool(row.get("disclosure_found_html")),
+        inside_modal=bool(row.get("inside_modal")),
+        disclosure_type=str(row.get("disclosure_type") or ""),
+        modal_rect_ok=modal_rect_ok,
+        total_rect_ok=total_rect_ok,
+        cta_rect_ok=cta_rect_ok,
+        disclosure_inside_summary=row.get("disclosure_inside_summary_panel"),
+        mc=mc,
+    )
+    merged_warn: Set[str] = set(extra_warn)
+    if validation_sink is not None:
+        merged_warn.update(validation_sink.get("warnings") or [])
+        validation_sink["warnings"] = sorted(merged_warn)
+        validation_sink["warning_count"] = len(merged_warn)
+    row["validation_warnings"] = "; ".join(sorted(merged_warn)) if merged_warn else ""
+    row["validation_warning_count"] = len(merged_warn)
 
     if write_annotated and img is not None and rects:
         draw_map: Dict[str, List[int]] = {}
@@ -1683,24 +2416,15 @@ def analyze_capture(
         draw_annotated_screenshot(img, draw_map, annotated_path)
         row["annotated_screenshot_path"] = str(annotated_path.as_posix())
 
-    if isinstance(ann_entry, dict):
-        wf = ann_entry.get("workflow")
-        if isinstance(wf, dict):
-            row["clicks_to_visible"] = wf.get("clicks_to_visible_disclosure")
-            row["requires_login"] = wf.get("requires_login")
-            stage = wf.get("capture_stage")
-            row["checkout_stage"] = stage
-        legacy = ann_entry.get("manual")
-        if isinstance(legacy, dict):
-            row["clicks_to_visible"] = row.get("clicks_to_visible") or legacy.get(
-                "clicks_to_visible"
-            )
-            row["requires_login"] = row.get("requires_login") or legacy.get("requires_login")
-            row["checkout_stage"] = row.get("checkout_stage") or legacy.get("checkout_stage")
+    if row.get("wcag_contrast_ratio") is None and md_cr is not None:
+        row["wcag_contrast_ratio"] = md_cr
+        if row.get("contrast_source") == "missing":
+            row["contrast_source"] = "manual_rgb"
 
-    # Prefer manual RGB contrast when HTML-derived contrast absent
-    if row.get("wcag_contrast_ratio") is None and row.get("annotation_wcag_contrast_ratio"):
-        row["wcag_contrast_ratio"] = row["annotation_wcag_contrast_ratio"]
+    row["pre_action_visibility_score_0_to_10"] = score_pre_action_visibility_0_10(row, mc)
+    row["price_proximity_score_0_to_10"] = score_price_proximity_0_10(row)
+    row["legal_burial_score_0_to_10"] = score_legal_burial_0_10(row, colors_obj)
+    row["top_policy_concern"], row["top_policy_concern_explanation"] = classify_top_policy_concern(row, mc)
 
     # Scores
     row["prominence_score_0_to_10"] = score_prominence_0_10(row)
@@ -1715,6 +2439,42 @@ def analyze_capture(
     row["disclosure_research_index_note"] = "Provisional research index only; not a legal assessment."
 
     return row
+
+
+PLATFORM_SUMMARY_COLUMNS: Tuple[str, ...] = (
+    "platform_inferred",
+    "disclosure_found_html",
+    "disclosure_type",
+    "disclosure_matched_phrase",
+    "required_sentence_standalone",
+    "inside_modal",
+    "modal_forced_or_dialog_like",
+    "clicks_to_visible",
+    "requires_scroll_to_see_disclosure",
+    "disclosure_after_cta_dom",
+    "disclosure_below_cta_screenshot",
+    "disclosure_below_primary_cta_screenshot",
+    "disclosure_after_total_dom",
+    "disclosure_below_total_screenshot",
+    "disclosure_inside_legal_disclaimer_block",
+    "required_sentence_inside_legal_disclaimer_block",
+    "disclosure_area_pct_of_viewport",
+    "required_sentence_area_pct_of_viewport",
+    "manual_disclosure_contrast_ratio",
+    "manual_required_sentence_contrast_ratio",
+    "distance_disclosure_to_total_as_viewport_width_pct",
+    "pre_action_visibility_score_0_to_10",
+    "price_proximity_score_0_to_10",
+    "legal_burial_score_0_to_10",
+    "prominence_score_0_to_10",
+    "placement_score_0_to_10",
+    "friction_score_0_to_10",
+    "overall_simple_score_0_to_10",
+    "overall_evidence_confidence",
+    "top_policy_concern",
+    "top_policy_concern_explanation",
+    "validation_warning_count",
+)
 
 
 def load_normalized_captures(path: Optional[Path]) -> Tuple[Dict[str, Any], List[str]]:
@@ -1793,6 +2553,22 @@ def main() -> None:
         viz_by_txt[txt_r] = viz_ctx
         validation_report.append(vdict)
 
+    rows: List[Dict[str, Any]] = []
+    for i, txt in enumerate(txt_files):
+        txt_r = txt.resolve()
+        rows.append(
+            analyze_capture(
+                txt_r,
+                captures_dir,
+                viz_ctx=viz_by_txt[txt_r],
+                enable_ocr=args.enable_ocr,
+                screenshot_pixel_stats=args.enable_screenshot_pixel_stats,
+                write_annotated=not args.no_annotated_screenshots,
+                out_dir=out_dir,
+                validation_sink=validation_report[i],
+            )
+        )
+
     val_path = out_dir / "validation_report.json"
     val_path.write_text(json.dumps(validation_report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Wrote validation report: {val_path}")
@@ -1807,25 +2583,11 @@ def main() -> None:
         )
         ib = vr.get("invalid_boxes_detail") or []
         mb = vr.get("missing_box_keys") or []
+        wn = vr.get("warnings") or []
         print(
             f"  [{nk}] path={vr.get('screenshot_path_resolved')} exists={vr.get('screenshot_path_exists')} "
             f"loaded={loaded} dims={dims} invalid={len(ib)} missing={len(mb)} "
-            f"rgb={vr.get('manual_rgb_present')} workflow={vr.get('workflow_present')}",
-        )
-
-    rows: List[Dict[str, Any]] = []
-    for txt in txt_files:
-        txt_r = txt.resolve()
-        rows.append(
-            analyze_capture(
-                txt_r,
-                captures_dir,
-                viz_ctx=viz_by_txt[txt_r],
-                enable_ocr=args.enable_ocr,
-                screenshot_pixel_stats=args.enable_screenshot_pixel_stats,
-                write_annotated=not args.no_annotated_screenshots,
-                out_dir=out_dir,
-            )
+            f"warnings={len(wn)} rgb={vr.get('manual_rgb_present')} workflow={vr.get('workflow_present')}",
         )
 
     df = pd.DataFrame(rows)
@@ -1836,6 +2598,15 @@ def main() -> None:
 
     print(f"Wrote {csv_path} ({len(rows)} rows)")
     print(f"Wrote {json_path}")
+
+    summary_cols = [c for c in PLATFORM_SUMMARY_COLUMNS if c in df.columns]
+    summary_df = df[summary_cols]
+    ps_csv = out_dir / "platform_summary.csv"
+    ps_json = out_dir / "platform_summary.json"
+    summary_df.to_csv(ps_csv, index=False, quoting=csv.QUOTE_MINIMAL)
+    summary_df.to_json(ps_json, orient="records", indent=2)
+    print(f"Wrote {ps_csv}")
+    print(f"Wrote {ps_json}")
 
 
 # ---------------------------------------------------------------------------
