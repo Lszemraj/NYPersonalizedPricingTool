@@ -1,0 +1,360 @@
+{
+  "run_id": "20260503T194548Z_9df2ac0c",
+  "timestamp": "2026-05-03T19:46:38.084590+00:00",
+  "url": "https://www.walmart.com",
+  "target_url": "https://www.walmart.com",
+  "platform_name": "Walmart",
+  "category": "Grocery / retail",
+  "homepage_url": "https://www.walmart.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "search | pdp | cart",
+  "platform_notes": "Pickup/delivery; W+ pricing context possible.",
+  "persona_name": "desktop_nyc_city_hall_fresh",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$0.00",
+  "num_price_candidates": 40,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Walmart__www.walmart.com__desktop_nyc_city_hall_fresh.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Walmart__www.walmart.com__desktop_nyc_city_hall_fresh.html",
+  "json_path": null,
+  "error": null,
+  "prices": [
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0.00",
+      "dom_context": "header.flex | Skip to Main Content\nPickup or delivery?\nReorder\nMy Items\nSign In\nAccount\n$0.00"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0.00",
+      "dom_context": "nav | Reorder\nMy Items\nSign In\nAccount\n$0.00"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0.00",
+      "dom_context": "li.undefined | $0.00"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0.00",
+      "dom_context": "div.cart-button | $0.00"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0.00",
+      "dom_context": "span.db | $0.00"
+    },
+    {
+      "value": 1,
+      "currency_hint": "USD",
+      "raw_text": "$1",
+      "dom_context": "div | GroceryGroceryAll GroceryMeals Made EasyMother's Day Food$1 Food HubRecipe InspirationMeat & SeafoodFresh ProduceFrozenB"
+    },
+    {
+      "value": 1,
+      "currency_hint": "USD",
+      "raw_text": "$1",
+      "dom_context": "a | $1 Food Hub"
+    },
+    {
+      "value": 4,
+      "currency_hint": "USD",
+      "raw_text": "$4",
+      "dom_context": "div | PharmacyPharmacyPharmacy HomePharmacy DeliveryRefill PrescriptionsTransfer PrescriptionsFind a Pharmacy$4 PrescriptionsP"
+    },
+    {
+      "value": 4,
+      "currency_hint": "USD",
+      "raw_text": "$4",
+      "dom_context": "a | $4 Prescriptions"
+    },
+    {
+      "value": 15,
+      "currency_hint": "USD",
+      "raw_text": "$15",
+      "dom_context": "li.flex | Get Free Delivery with Walmart+\n\nMother’s Day gifts $15 & under\n\nShop now\nShop now"
+    },
+    {
+      "value": 15,
+      "currency_hint": "USD",
+      "raw_text": "$15",
+      "dom_context": "div.aspect-ratio--object | Get Free Delivery with Walmart+\n\nMother’s Day gifts $15 & under\n\nShop now\nShop now"
+    },
+    {
+      "value": 15,
+      "currency_hint": "USD",
+      "raw_text": "$15",
+      "dom_context": "p#heading-PrismAdjustableCardCarousel-contentZone3-LYdPCyut-card-3 | Mother’s Day gifts $15 & under"
+    },
+    {
+      "value": 92,
+      "currency_hint": "USD",
+      "raw_text": "$92.00",
+      "dom_context": "li.flex | Clearance Arctus Twin Memory Foam Mattress, 8 inch Gel Memory Foam Mattress in a Box, Medium $92.00 Was $107.00\nClearanc"
+    },
+    {
+      "value": 92,
+      "currency_hint": "USD",
+      "raw_text": "$92.00",
+      "dom_context": "div.sans-serif | Clearance Arctus Twin Memory Foam Mattress, 8 inch Gel Memory Foam Mattress in a Box, Medium $92.00 Was $107.00\nClearanc"
+    },
+    {
+      "value": 92,
+      "currency_hint": "USD",
+      "raw_text": "$92.00",
+      "dom_context": "span.ld_Fc | Clearance Arctus Twin Memory Foam Mattress, 8 inch Gel Memory Foam Mattress in a Box, Medium $92.00 Was $107.00"
+    },
+    {
+      "value": 92,
+      "currency_hint": "USD",
+      "raw_text": "$92.00",
+      "dom_context": "h3 | Clearance Arctus Twin Memory Foam Mattress, 8 inch Gel Memory Foam Mattress in a Box, Medium $92.00 Was $107.00"
+    },
+    {
+      "value": 9200,
+      "currency_hint": "USD",
+      "raw_text": "$9200",
+      "dom_context": "div | Now$9200\ncurrent price Now $92.00, Was $107.00\n$107.00\nOptions from $92.00 – $179.00\nArctus Twin Memory Foam Mattress, 8"
+    },
+    {
+      "value": 9200,
+      "currency_hint": "USD",
+      "raw_text": "$9200",
+      "dom_context": "div.mt1 | Now$9200\ncurrent price Now $92.00, Was $107.00\n$107.00\nOptions from $92.00 – $179.00"
+    },
+    {
+      "value": 9200,
+      "currency_hint": "USD",
+      "raw_text": "$9200",
+      "dom_context": "div.flex | Now$9200\ncurrent price Now $92.00, Was $107.00\n$107.00\nOptions from $92.00 – $179.00"
+    },
+    {
+      "value": 107,
+      "currency_hint": "USD",
+      "raw_text": "$107.00",
+      "dom_context": "span.strike | $107.00"
+    },
+    {
+      "value": 92,
+      "currency_hint": "USD",
+      "raw_text": "$92.00",
+      "dom_context": "div.nearer-mid-gray | Options from $92.00 – $179.00"
+    },
+    {
+      "value": 15,
+      "currency_hint": "USD",
+      "raw_text": "$15",
+      "dom_context": "span.ld_Fc | FARRLADI Silicone Windshield Wipers Replacement for Hyundai Tucson 2005-2015,Kia Sportage 2005-2010,Mitsubishi Mirage 20"
+    },
+    {
+      "value": 1599,
+      "currency_hint": "USD",
+      "raw_text": "$1599",
+      "dom_context": "div | Options\n$1599\ncurrent price $15.99\nMore options from $15.28\nFARRLADI Silicone Windshield Wipers Replacement for Hyundai "
+    },
+    {
+      "value": 1599,
+      "currency_hint": "USD",
+      "raw_text": "$1599",
+      "dom_context": "div.mt1 | $1599\ncurrent price $15.99\nMore options from $15.28"
+    },
+    {
+      "value": 1599,
+      "currency_hint": "USD",
+      "raw_text": "$1599",
+      "dom_context": "div.flex | $1599\ncurrent price $15.99\nMore options from $15.28"
+    },
+    {
+      "value": 15.99,
+      "currency_hint": "USD",
+      "raw_text": "$15.99",
+      "dom_context": "span.ld_Fc | current price $15.99"
+    },
+    {
+      "value": 1299.99,
+      "currency_hint": "USD",
+      "raw_text": "$1,299.99",
+      "dom_context": "li.flex | Jocisland 13'×15' Wood Gazebo, Rain resistant, Hardtop Gazebo with Metal Steel Gable Roof, Black & Natural Wood $1,299.9"
+    },
+    {
+      "value": 1299.99,
+      "currency_hint": "USD",
+      "raw_text": "$1,299.99",
+      "dom_context": "div.sans-serif | Jocisland 13'×15' Wood Gazebo, Rain resistant, Hardtop Gazebo with Metal Steel Gable Roof, Black & Natural Wood $1,299.9"
+    },
+    {
+      "value": 1299.99,
+      "currency_hint": "USD",
+      "raw_text": "$1,299.99",
+      "dom_context": "span.ld_Fc | Jocisland 13'×15' Wood Gazebo, Rain resistant, Hardtop Gazebo with Metal Steel Gable Roof, Black & Natural Wood $1,299.9"
+    },
+    {
+      "value": 129999,
+      "currency_hint": "USD",
+      "raw_text": "$1,29999",
+      "dom_context": "div | Options\n$1,29999\ncurrent price $1,299.99\nOptions from $1,299.99 – $1,499.99\nJocisland 13'×15' Wood Gazebo, Rain resistan"
+    },
+    {
+      "value": 129999,
+      "currency_hint": "USD",
+      "raw_text": "$1,29999",
+      "dom_context": "div.mt1 | $1,29999\ncurrent price $1,299.99\nOptions from $1,299.99 – $1,499.99"
+    },
+    {
+      "value": 129999,
+      "currency_hint": "USD",
+      "raw_text": "$1,29999",
+      "dom_context": "div.flex | $1,29999\ncurrent price $1,299.99\nOptions from $1,299.99 – $1,499.99"
+    },
+    {
+      "value": 1299.99,
+      "currency_hint": "USD",
+      "raw_text": "$1,299.99",
+      "dom_context": "div.nearer-mid-gray | Options from $1,299.99 – $1,499.99"
+    },
+    {
+      "value": 619.99,
+      "currency_hint": "USD",
+      "raw_text": "$619.99",
+      "dom_context": "li.flex | ZENART Full Body Massage Chair Recliner with Zero Gravity, Heating, Bluetooth Speaker, Airbags, Foot Roller, for Home Of"
+    },
+    {
+      "value": 619.99,
+      "currency_hint": "USD",
+      "raw_text": "$619.99",
+      "dom_context": "div.sans-serif | ZENART Full Body Massage Chair Recliner with Zero Gravity, Heating, Bluetooth Speaker, Airbags, Foot Roller, for Home Of"
+    },
+    {
+      "value": 619.99,
+      "currency_hint": "USD",
+      "raw_text": "$619.99",
+      "dom_context": "span.ld_Fc | ZENART Full Body Massage Chair Recliner with Zero Gravity, Heating, Bluetooth Speaker, Airbags, Foot Roller, for Home Of"
+    },
+    {
+      "value": 619.99,
+      "currency_hint": "USD",
+      "raw_text": "$619.99",
+      "dom_context": "h3 | ZENART Full Body Massage Chair Recliner with Zero Gravity, Heating, Bluetooth Speaker, Airbags, Foot Roller, for Home Of"
+    },
+    {
+      "value": 61999,
+      "currency_hint": "USD",
+      "raw_text": "$61999",
+      "dom_context": "div | Now$61999\ncurrent price Now $619.99, Was $1,199.99\n$1,199.99\nZENART Full Body Massage Chair Recliner with Zero Gravity, "
+    },
+    {
+      "value": 61999,
+      "currency_hint": "USD",
+      "raw_text": "$61999",
+      "dom_context": "div.mt1 | Now$61999\ncurrent price Now $619.99, Was $1,199.99\n$1,199.99"
+    },
+    {
+      "value": 61999,
+      "currency_hint": "USD",
+      "raw_text": "$61999",
+      "dom_context": "div.flex | Now$61999\ncurrent price Now $619.99, Was $1,199.99\n$1,199.99"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "homepage_or_content",
+  "click_depth": 0,
+  "path_taken": [
+    "https://www.walmart.com"
+  ],
+  "selectors_clicked": [],
+  "pricing_state_confidence": 1.0,
+  "likely_price_page_type_detected": "other",
+  "price_found": true,
+  "fee_candidates": [
+    "reduced price mateeylife slow feeder dog bowls 2pcs, non slip cat food bowls, bloat stop maze dishes, interactive feeder for all breeds 2 cup pink&purple $10.49 was $11.99"
+  ],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "no_safe_candidates",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.walmart.com/",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 40,
+      "pricing_state_confidence": 1.0,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "web_desktop",
+  "account_state": "fresh",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}

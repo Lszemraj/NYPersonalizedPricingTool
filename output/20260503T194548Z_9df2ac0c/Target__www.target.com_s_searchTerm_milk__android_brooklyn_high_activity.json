@@ -1,0 +1,376 @@
+{
+  "run_id": "20260503T194548Z_9df2ac0c",
+  "timestamp": "2026-05-03T19:46:59.680846+00:00",
+  "url": "https://www.target.com/s?searchTerm=milk",
+  "target_url": "https://www.target.com/s?searchTerm=milk",
+  "platform_name": "Target",
+  "category": "Grocery / retail",
+  "homepage_url": "https://www.target.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "search | cart | checkout",
+  "platform_notes": "Circle offers; cart summary.",
+  "persona_name": "android_brooklyn_high_activity",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$3.99",
+  "num_price_candidates": 40,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Target__www.target.com_s_searchTerm_milk__android_brooklyn_high_activity.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T194548Z_9df2ac0c\\Target__www.target.com_s_searchTerm_milk__android_brooklyn_high_activity.html",
+  "json_path": null,
+  "error": null,
+  "prices": [
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div.styles_productCardVariantDefaultWrapper__rldsI | $3.99($0.12/fluid ounce)\nWest Life Organic Unsweetened Plain Shelf Stable Soy Milk - 32 fl oz\nWest Life\n4.2\n(16)\nSNAP EB"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div.styles_productCardVariantDefault__T8qSD | $3.99($0.12/fluid ounce)\nWest Life Organic Unsweetened Plain Shelf Stable Soy Milk - 32 fl oz\nWest Life\n4.2\n(16)\nSNAP EB"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div.styles_row__QFU7M | $3.99($0.12/fluid ounce)\nWest Life Organic Unsweetened Plain Shelf Stable Soy Milk - 32 fl oz\nWest Life\n4.2\n(16)\nSNAP EB"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div.styles_detailsWrapper__jG_DV | $3.99($0.12/fluid ounce)\nWest Life Organic Unsweetened Plain Shelf Stable Soy Milk - 32 fl oz\nWest Life\n4.2\n(16)\nSNAP EB"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div#product-card-price-94431253 | $3.99($0.12/fluid ounce)"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "div.styles_priceStandardLineHeight__AS5bE | $3.99($0.12/fluid ounce)"
+    },
+    {
+      "value": 3.99,
+      "currency_hint": "USD",
+      "raw_text": "$3.99",
+      "dom_context": "span.styles_styledBodyMdText__lJVEV | $3.99"
+    },
+    {
+      "value": 0.12,
+      "currency_hint": "USD",
+      "raw_text": "$0.12",
+      "dom_context": "span.h-margin-r-tiny | ($0.12/fluid ounce)"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div.styles_cardWrapper__Lo85r | $5.29($0.17/fluid ounce)\nLattini Unsweetened Sunflower Milk - 32 fl oz\nLattini\n4.5\n(34)\nSNAP EBT eligible\nOnly 6 left at"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div.styles_productCardVariantDefaultWrapper__rldsI | $5.29($0.17/fluid ounce)\nLattini Unsweetened Sunflower Milk - 32 fl oz\nLattini\n4.5\n(34)\nSNAP EBT eligible\nOnly 6 left at"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div.styles_productCardBody__F2bEC | $5.29($0.17/fluid ounce)\nLattini Unsweetened Sunflower Milk - 32 fl oz\nLattini\n4.5\n(34)\nSNAP EBT eligible\nOnly 6 left at"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div.styles_row__QFU7M | $5.29($0.17/fluid ounce)\nLattini Unsweetened Sunflower Milk - 32 fl oz\nLattini\n4.5\n(34)\nSNAP EBT eligible\nOnly 6 left at"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div.styles_productCardPriceAndPromoWrapper__moXcg | $5.29($0.17/fluid ounce)"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div#product-card-price-94641051 | $5.29($0.17/fluid ounce)"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "div | $5.29($0.17/fluid ounce)"
+    },
+    {
+      "value": 5.29,
+      "currency_hint": "USD",
+      "raw_text": "$5.29",
+      "dom_context": "span | $5.29"
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_cardWrapper__Lo85r | Highly rated\n$4.29($0.03/fluid ounce)\nVitamin D Whole Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n("
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_productCardVariantDefaultWrapper__rldsI | Highly rated\n$4.29($0.03/fluid ounce)\nVitamin D Whole Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n("
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_productCardBody__F2bEC | Highly rated\n$4.29($0.03/fluid ounce)\nVitamin D Whole Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n("
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_row__QFU7M | Highly rated\n$4.29($0.03/fluid ounce)\nVitamin D Whole Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n("
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_detailsWrapper__jG_DV | $4.29($0.03/fluid ounce)\nVitamin D Whole Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(31581)\nSNAP E"
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_productCardPriceAndPromoWrapper__moXcg | $4.29($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div.styles_priceStandardLineHeight__AS5bE | $4.29($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "div | $4.29($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.29,
+      "currency_hint": "USD",
+      "raw_text": "$4.29",
+      "dom_context": "span | $4.29"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_cardWrapper__Lo85r | Highly rated\n$4.19($0.03/fluid ounce)\n2% Reduced Fat Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(3"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_productCardVariantDefaultWrapper__rldsI | Highly rated\n$4.19($0.03/fluid ounce)\n2% Reduced Fat Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(3"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_productCardBody__F2bEC | Highly rated\n$4.19($0.03/fluid ounce)\n2% Reduced Fat Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(3"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_row__QFU7M | Highly rated\n$4.19($0.03/fluid ounce)\n2% Reduced Fat Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(3"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_detailsWrapper__jG_DV | $4.19($0.03/fluid ounce)\n2% Reduced Fat Milk - 1gal - Good & Gather™\nGood & Gather\nOnly at\n target\n¬\n4.5\n(31581)\nSNAP EB"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_productCardPriceAndPromoWrapper__moXcg | $4.19($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div.styles_priceStandardLineHeight__AS5bE | $4.19($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "div | $4.19($0.03/fluid ounce)"
+    },
+    {
+      "value": 4.19,
+      "currency_hint": "USD",
+      "raw_text": "$4.19",
+      "dom_context": "span | $4.19"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_cardWrapper__Lo85r | Highly rated\n$5.39($0.10/fluid ounce)\nFairlife Lactose-Free 2% Milk - 52 fl oz\nfairlife\n4.8\n(10666)\nSNAP EBT eligible\nPi"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_productCardVariantDefaultWrapper__rldsI | Highly rated\n$5.39($0.10/fluid ounce)\nFairlife Lactose-Free 2% Milk - 52 fl oz\nfairlife\n4.8\n(10666)\nSNAP EBT eligible\nPi"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_productCardBody__F2bEC | Highly rated\n$5.39($0.10/fluid ounce)\nFairlife Lactose-Free 2% Milk - 52 fl oz\nfairlife\n4.8\n(10666)\nSNAP EBT eligible\nPi"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_row__QFU7M | Highly rated\n$5.39($0.10/fluid ounce)\nFairlife Lactose-Free 2% Milk - 52 fl oz\nfairlife\n4.8\n(10666)\nSNAP EBT eligible\nPi"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_detailsWrapper__jG_DV | $5.39($0.10/fluid ounce)\nFairlife Lactose-Free 2% Milk - 52 fl oz\nfairlife\n4.8\n(10666)\nSNAP EBT eligible\nPickup ready wi"
+    },
+    {
+      "value": 5.39,
+      "currency_hint": "USD",
+      "raw_text": "$5.39",
+      "dom_context": "div.styles_productCardPriceAndPromoWrapper__moXcg | $5.39($0.10/fluid ounce)"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "search_results",
+  "click_depth": 1,
+  "path_taken": [
+    "https://www.target.com/s?searchTerm=milk",
+    "https://www.target.com/s?searchTerm=milk"
+  ],
+  "selectors_clicked": [
+    "btn:Cart:Add to cart"
+  ],
+  "pricing_state_confidence": 0.7,
+  "likely_price_page_type_detected": "search_results",
+  "price_found": true,
+  "fee_candidates": [],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "strong_pricing_state",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.target.com/s?searchTerm=milk",
+      "page_stage": "search_results",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 0,
+      "pricing_state_confidence": 0.1,
+      "likely_price_page_type_detected": "search_results",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    },
+    {
+      "depth": 1,
+      "url": "https://www.target.com/s?searchTerm=milk",
+      "page_stage": "search_results",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 40,
+      "pricing_state_confidence": 0.7,
+      "likely_price_page_type_detected": "search_results",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "android_mobile",
+  "account_state": "high_activity",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}

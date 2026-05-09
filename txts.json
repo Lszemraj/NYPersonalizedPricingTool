@@ -6,14 +6,14 @@
         "screenshot": "captures/instacart.png"
       },
       "screenshot": {
-        "width_px": 2048,
-        "height_px": 1149,
-        "viewport_width_px": 2048,
-        "viewport_height_px": 1149,
+        "width_px": 2890,
+        "height_px": 1622,
+        "viewport_width_px": 2890,
+        "viewport_height_px": 1622,
         "browser_zoom_percent": 100,
         "device_scale_factor": 1,
         "scroll_y_px": 0,
-        "fold_y_px": 1149
+        "fold_y_px": 1622
       },
       "workflow": {
         "capture_stage": "checkout_summary",
@@ -28,24 +28,228 @@
         "user_had_to_open_terms_or_privacy_link": false
       },
       "boxes": {
-        "disclosure_box": [0, 0, 0, 0],
-        "required_sentence_box": [0, 0, 0, 0],
-        "total_price_box": [0, 0, 0, 0],
-        "total_row_box": [0, 0, 0, 0],
-        "primary_cta_box": [0, 0, 0, 0],
-        "summary_panel_box": [0, 0, 0, 0],
-        "legal_disclaimer_block_box": [0, 0, 0, 0],
+        "disclosure_box": [1698, 2117, 1269, 1400],
+        "required_sentence_box": [1698, 2117, 1356, 1400],
+        "total_price_box": [2042, 2126, 679, 714],
+        "total_row_box": [1695, 2126, 679, 714],
+        "primary_cta_box": [1695, 2126, 896, 968],
+        "summary_panel_box": [1692, 2140, 234, 1422],
+        "legal_disclaimer_block_box": [1695, 2126, 985, 988],
+        "modal_box": null
+      },
+      "colors": {
+        "disclosure_text_rgb": [0, 0, 0],
+        "disclosure_background_rgb": [255, 254, 255],
+        "required_sentence_text_rgb": [0, 0, 0],
+        "total_price_text_rgb": [0, 0, 0],
+        "cta_background_rgb": [19, 136, 16],
+        "cta_text_rgb": [255, 255, 255],
+        "surrounding_legal_text_rgb": [0, 0, 0],
+        "page_background_rgb": [245, 246, 248],
+        "summary_panel_background_rgb": [255, 254, 255]
+      },
+      "manual_classification": {
+        "disclosure_position_description": "bottom_of_summary_panel_below_continue_button",
+        "visual_grouping": "legal_disclaimer_block",
+        "disclosure_visually_distinct_from_surrounding_text": false,
+        "required_sentence_bolded": false,
+        "required_sentence_standalone": false,
+        "disclosure_has_heading_or_label": false,
+        "disclosure_has_border_or_callout": false,
+        "disclosure_has_icon": false,
+        "disclosure_same_panel_as_total": true,
+        "disclosure_appears_below_total": true,
+        "disclosure_appears_below_primary_cta": true,
+        "disclosure_appears_before_primary_cta": false
+      },
+      "notes": {
+        "reviewer_initials": "CM",
+        "review_date": "",
+        "freeform_note": ""
+      }
+    },
+  "ubereats": {
+      "files": {
+        "html": "captures/ubereats.txt",
+        "screenshot": "captures/ubereats.png"
+      },
+      "screenshot": {
+        "width_px": 3323,
+        "height_px": 1741,
+        "viewport_width_px": 3323,
+        "viewport_height_px": 1741,
+        "browser_zoom_percent": 100,
+        "device_scale_factor": 1,
+        "scroll_y_px": 0,
+        "fold_y_px": 1617
+      },
+      "workflow": {
+        "capture_stage": "checkout_summary",
+        "clicks_to_visible_disclosure": 6,
+        "requires_login": true,
+        "requires_cart": true,
+        "requires_checkout_stage": true,
+        "requires_scroll_to_see_disclosure": true,
+        "modal_appeared_automatically": false,
+        "disclosure_hidden_behind_tooltip": false,
+        "user_had_to_open_fee_details": false,
+        "user_had_to_open_terms_or_privacy_link": false
+      },
+      "boxes": {
+        "disclosure_box": [2085, 2997, 1048, 1138],
+        "required_sentence_box": [2085, 2997, 1048, 1138],
+        "total_price_box": [2893, 3026, 958, 1030],
+        "total_row_box": [2080, 3026, 958, 1030],
+        "primary_cta_box": [200, 1982, 958, 1100],
+        "summary_panel_box": [2040, 3070, 83, 1534],
+        "legal_disclaimer_block_box": [2039, 3063, 1048, 1547],
         "modal_box": null
       },
       "colors": {
         "disclosure_text_rgb": [0, 0, 0],
         "disclosure_background_rgb": [255, 255, 255],
-        "required_sentence_text_rgb": [0, 0, 0],
+        "required_sentence_text_rgb": [243, 243, 243],
         "total_price_text_rgb": [0, 0, 0],
         "cta_background_rgb": [0, 0, 0],
         "cta_text_rgb": [255, 255, 255],
         "surrounding_legal_text_rgb": [0, 0, 0],
-        "page_background_rgb": [255, 255, 255],
+        "page_background_rgb": [243, 243, 243],
+        "summary_panel_background_rgb": [243, 243, 243]
+      },
+      "manual_classification": {
+        "disclosure_position_description": "bottom_of_summary_panel_below_continue_button",
+        "visual_grouping": "legal_disclaimer_block",
+        "disclosure_visually_distinct_from_surrounding_text": false,
+        "required_sentence_bolded": false,
+        "required_sentence_standalone": true,
+        "disclosure_has_heading_or_label": false,
+        "disclosure_has_border_or_callout": false,
+        "disclosure_has_icon": false,
+        "disclosure_same_panel_as_total": true,
+        "disclosure_appears_below_total": true,
+        "disclosure_appears_below_primary_cta": true,
+        "disclosure_appears_before_primary_cta": false
+      },
+      "notes": {
+        "reviewer_initials": "CM",
+        "review_date": "",
+        "freeform_note": ""
+      }
+    },
+  "doordash": {
+      "files": {
+        "html": "captures/doordash.txt",
+        "screenshot": "captures/doordash.png"
+      },
+      "screenshot": {
+        "width_px": 3323,
+        "height_px": 1741,
+        "viewport_width_px": 3321,
+        "viewport_height_px": 1741,
+        "browser_zoom_percent": 100,
+        "device_scale_factor": 1,
+        "scroll_y_px": 0,
+        "fold_y_px": 1741
+      },
+      "workflow": {
+        "capture_stage": "checkout_summary",
+        "clicks_to_visible_disclosure": 0,
+        "requires_login": true,
+        "requires_cart": false,
+        "requires_checkout_stage": false,
+        "requires_scroll_to_see_disclosure": false,
+        "modal_appeared_automatically": false,
+        "disclosure_hidden_behind_tooltip": false,
+        "user_had_to_open_fee_details": false,
+        "user_had_to_open_terms_or_privacy_link": false
+      },
+      "boxes": {
+        "disclosure_box": [1000, 2285, 972, 1354],
+        "required_sentence_box": [1220, 2285, 1311, 1358],
+        "total_price_box": [0, 0, 0, 0],
+        "total_row_box": [0, 0, 0, 0],
+        "primary_cta_box": [1017, 2295, 1408, 1527],
+        "summary_panel_box": [0, 0, 0, 0],
+        "legal_disclaimer_block_box": [1000, 2285, 972, 1354],
+        "modal_box": [957, 2348, 143, 1577]
+      },
+      "colors": {
+        "disclosure_text_rgb": [25, 25, 25],
+        "disclosure_background_rgb": [255, 255, 255],
+        "required_sentence_text_rgb": [25, 25, 25],
+        "total_price_text_rgb": [0, 0, 0],
+        "cta_background_rgb": [200, 51, 31],
+        "cta_text_rgb": [255, 255, 255],
+        "surrounding_legal_text_rgb": [25, 25, 25],
+        "page_background_rgb": [140, 140, 140],
+        "summary_panel_background_rgb": [255, 255, 255]
+      },
+      "manual_classification": {
+        "disclosure_position_description": "bottom_of_summary_panel_below_continue_button",
+        "visual_grouping": "legal_disclaimer_block",
+        "disclosure_visually_distinct_from_surrounding_text": false,
+        "required_sentence_bolded": false,
+        "required_sentence_standalone": false,
+        "disclosure_has_heading_or_label": false,
+        "disclosure_has_border_or_callout": false,
+        "disclosure_has_icon": false,
+        "disclosure_same_panel_as_total": false,
+        "disclosure_appears_below_total": false,
+        "disclosure_appears_below_primary_cta": false,
+        "disclosure_appears_before_primary_cta": true
+      },
+      "notes": {
+        "reviewer_initials": "CM",
+        "review_date": "",
+        "freeform_note": ""
+      }
+    },
+  "postmates": {
+      "files": {
+        "html": "captures/postmates.txt",
+        "screenshot": "captures/postmates.png"
+      },
+      "screenshot": {
+        "width_px": 3323,
+        "height_px": 1741,
+        "viewport_width_px": 3323,
+        "viewport_height_px": 1741,
+        "browser_zoom_percent": 100,
+        "device_scale_factor": 1,
+        "scroll_y_px": 0,
+        "fold_y_px": 1741
+      },
+      "workflow": {
+        "capture_stage": "checkout_summary",
+        "clicks_to_visible_disclosure": 0,
+        "requires_login": true,
+        "requires_cart": true,
+        "requires_checkout_stage": true,
+        "requires_scroll_to_see_disclosure": true,
+        "modal_appeared_automatically": false,
+        "disclosure_hidden_behind_tooltip": false,
+        "user_had_to_open_fee_details": false,
+        "user_had_to_open_terms_or_privacy_link": false
+      },
+      "boxes": {
+        "disclosure_box": [2088, 2793, 975, 1071],
+        "required_sentence_box": [2088, 2793, 975, 1021],
+        "total_price_box": [2870, 3036, 885, 942],
+        "total_row_box": [2082, 3036, 885, 942],
+        "primary_cta_box": [196, 1989, 702, 838],
+        "summary_panel_box": [2032, 3070, 136, 1661],
+        "legal_disclaimer_block_box": [2068, 3050, 975, 1644],
+        "modal_box": null
+      },
+      "colors": {
+        "disclosure_text_rgb": [61, 61, 66],
+        "disclosure_background_rgb": [255, 255, 255],
+        "required_sentence_text_rgb": [61, 61, 66],
+        "total_price_text_rgb": [62, 57, 60],
+        "cta_background_rgb": [57, 88, 76],
+        "cta_text_rgb": [255, 255, 255],
+        "surrounding_legal_text_rgb": [61, 61, 66],
+        "page_background_rgb": [246, 246, 248],
         "summary_panel_background_rgb": [255, 255, 255]
       },
       "manual_classification": {
@@ -67,6 +271,4 @@
         "review_date": "",
         "freeform_note": ""
       }
-    }
-  }
-}
+    }}}

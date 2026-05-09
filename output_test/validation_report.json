@@ -1,0 +1,250 @@
+[
+  {
+    "capture_key": "doordash",
+    "text_path": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/doordash.txt",
+    "annotation_found": true,
+    "merge_notes": [],
+    "issues": [
+      "total_price_box: x2 (0) <= x1 (0)",
+      "total_row_box: x2 (0) <= x1 (0)",
+      "summary_panel_box: x2 (0) <= x1 (0)"
+    ],
+    "screenshot_path_configured": true,
+    "screenshot_path_resolved": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/doordash.png",
+    "screenshot_path_exists": false,
+    "screenshot_loaded": false,
+    "screenshot_width_px": null,
+    "screenshot_height_px": null,
+    "fold_y_px_annotation": 1741,
+    "box_format_expected": "x1_x2_y1_y2",
+    "normalized_boxes": {
+      "disclosure_box": {
+        "x": 1000,
+        "y": 972,
+        "width": 1285,
+        "height": 382
+      },
+      "required_sentence_box": {
+        "x": 1220,
+        "y": 1311,
+        "width": 1065,
+        "height": 47
+      },
+      "primary_cta_box": {
+        "x": 1017,
+        "y": 1408,
+        "width": 1278,
+        "height": 119
+      },
+      "legal_disclaimer_block_box": {
+        "x": 1000,
+        "y": 972,
+        "width": 1285,
+        "height": 382
+      },
+      "modal_box": {
+        "x": 957,
+        "y": 143,
+        "width": 1391,
+        "height": 1434
+      }
+    },
+    "invalid_boxes_detail": [
+      "total_price_box: x2 (0) <= x1 (0)",
+      "total_row_box: x2 (0) <= x1 (0)",
+      "summary_panel_box: x2 (0) <= x1 (0)"
+    ],
+    "missing_box_keys": [],
+    "manual_rgb_present": true,
+    "workflow_present": true
+  },
+  {
+    "capture_key": "instacart",
+    "text_path": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/instacart.txt",
+    "annotation_found": true,
+    "merge_notes": [],
+    "issues": [],
+    "screenshot_path_configured": true,
+    "screenshot_path_resolved": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/instacart.png",
+    "screenshot_path_exists": false,
+    "screenshot_loaded": false,
+    "screenshot_width_px": null,
+    "screenshot_height_px": null,
+    "fold_y_px_annotation": 1622,
+    "box_format_expected": "x1_x2_y1_y2",
+    "normalized_boxes": {
+      "disclosure_box": {
+        "x": 1698,
+        "y": 1269,
+        "width": 419,
+        "height": 131
+      },
+      "required_sentence_box": {
+        "x": 1698,
+        "y": 1356,
+        "width": 419,
+        "height": 44
+      },
+      "total_price_box": {
+        "x": 2042,
+        "y": 679,
+        "width": 84,
+        "height": 35
+      },
+      "total_row_box": {
+        "x": 1695,
+        "y": 679,
+        "width": 431,
+        "height": 35
+      },
+      "primary_cta_box": {
+        "x": 1695,
+        "y": 896,
+        "width": 431,
+        "height": 72
+      },
+      "summary_panel_box": {
+        "x": 1692,
+        "y": 234,
+        "width": 448,
+        "height": 1188
+      },
+      "legal_disclaimer_block_box": {
+        "x": 1695,
+        "y": 985,
+        "width": 431,
+        "height": 3
+      }
+    },
+    "invalid_boxes_detail": [],
+    "missing_box_keys": [],
+    "manual_rgb_present": true,
+    "workflow_present": true
+  },
+  {
+    "capture_key": "postmates",
+    "text_path": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/postmates.txt",
+    "annotation_found": true,
+    "merge_notes": [],
+    "issues": [],
+    "screenshot_path_configured": true,
+    "screenshot_path_resolved": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/postmates.png",
+    "screenshot_path_exists": false,
+    "screenshot_loaded": false,
+    "screenshot_width_px": null,
+    "screenshot_height_px": null,
+    "fold_y_px_annotation": 1741,
+    "box_format_expected": "x1_x2_y1_y2",
+    "normalized_boxes": {
+      "disclosure_box": {
+        "x": 2088,
+        "y": 975,
+        "width": 705,
+        "height": 96
+      },
+      "required_sentence_box": {
+        "x": 2088,
+        "y": 975,
+        "width": 705,
+        "height": 46
+      },
+      "total_price_box": {
+        "x": 2870,
+        "y": 885,
+        "width": 166,
+        "height": 57
+      },
+      "total_row_box": {
+        "x": 2082,
+        "y": 885,
+        "width": 954,
+        "height": 57
+      },
+      "primary_cta_box": {
+        "x": 196,
+        "y": 702,
+        "width": 1793,
+        "height": 136
+      },
+      "summary_panel_box": {
+        "x": 2032,
+        "y": 136,
+        "width": 1038,
+        "height": 1525
+      },
+      "legal_disclaimer_block_box": {
+        "x": 2068,
+        "y": 975,
+        "width": 982,
+        "height": 669
+      }
+    },
+    "invalid_boxes_detail": [],
+    "missing_box_keys": [],
+    "manual_rgb_present": true,
+    "workflow_present": true
+  },
+  {
+    "capture_key": "ubereats",
+    "text_path": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/ubereats.txt",
+    "annotation_found": true,
+    "merge_notes": [],
+    "issues": [],
+    "screenshot_path_configured": true,
+    "screenshot_path_resolved": "C:/Users/cmcke/OneDrive/Desktop/COS/COS 351/NYPersonalizedPricingTool/captures/ubereats.png",
+    "screenshot_path_exists": false,
+    "screenshot_loaded": false,
+    "screenshot_width_px": null,
+    "screenshot_height_px": null,
+    "fold_y_px_annotation": 1617,
+    "box_format_expected": "x1_x2_y1_y2",
+    "normalized_boxes": {
+      "disclosure_box": {
+        "x": 2085,
+        "y": 1048,
+        "width": 912,
+        "height": 90
+      },
+      "required_sentence_box": {
+        "x": 2085,
+        "y": 1048,
+        "width": 912,
+        "height": 90
+      },
+      "total_price_box": {
+        "x": 2893,
+        "y": 958,
+        "width": 133,
+        "height": 72
+      },
+      "total_row_box": {
+        "x": 2080,
+        "y": 958,
+        "width": 946,
+        "height": 72
+      },
+      "primary_cta_box": {
+        "x": 200,
+        "y": 958,
+        "width": 1782,
+        "height": 142
+      },
+      "summary_panel_box": {
+        "x": 2040,
+        "y": 83,
+        "width": 1030,
+        "height": 1451
+      },
+      "legal_disclaimer_block_box": {
+        "x": 2039,
+        "y": 1048,
+        "width": 1024,
+        "height": 499
+      }
+    },
+    "invalid_boxes_detail": [],
+    "missing_box_keys": [],
+    "manual_rgb_present": true,
+    "workflow_present": true
+  }
+]

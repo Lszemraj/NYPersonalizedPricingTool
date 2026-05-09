@@ -1,0 +1,376 @@
+{
+  "run_id": "20260503T192651Z_d47f4990",
+  "timestamp": "2026-05-03T19:28:19.930971+00:00",
+  "url": "https://www.airbnb.com/s/homes",
+  "target_url": "https://www.airbnb.com/s/homes",
+  "platform_name": "Airbnb",
+  "category": "Travel / lodging / flights",
+  "homepage_url": "https://www.airbnb.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "listing | checkout",
+  "platform_notes": "Total before pay; service fee breakdown.",
+  "persona_name": "iphone_long_island_city_returning",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$748",
+  "num_price_candidates": 40,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\Airbnb__www.airbnb.com_s_homes__iphone_long_island_city_returning.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\Airbnb__www.airbnb.com_s_homes__iphone_long_island_city_returning.html",
+  "json_path": null,
+  "error": null,
+  "prices": [
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.cfutgp0 | Warsaw, Missouri\nQuiet lake home with your own acreage and lake\n1,006 miles away\n1,006 miles away\nMay 4 – 9\nMay 4 – 9\n$7"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div | Warsaw, Missouri\nQuiet lake home with your own acreage and lake\n1,006 miles away\n1,006 miles away\nMay 4 – 9\nMay 4 – 9\n$7"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.cy5jw6o | Warsaw, Missouri\nQuiet lake home with your own acreage and lake\n1,006 miles away\n1,006 miles away\nMay 4 – 9\nMay 4 – 9\n$7"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.g1qv1ctd | Warsaw, Missouri\nQuiet lake home with your own acreage and lake\n1,006 miles away\n1,006 miles away\nMay 4 – 9\nMay 4 – 9\n$7"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.pi11895 | $748\nShow price breakdown\n \nfor 5 nights\n$748 for 5 nights"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.c1irrjfm | $748\nShow price breakdown\n \nfor 5 nights\n$748 for 5 nights"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.c1eou9fr | $748\nShow price breakdown\n \nfor 5 nights\n$748 for 5 nights"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "span.p1dgw2qm | $748\nShow price breakdown\n \nfor 5 nights\n$748 for 5 nights"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.c1y3vocb | $748\nShow price breakdown"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "div.touu2u1 | $748\nShow price breakdown"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "span.u174bpcy | $748"
+    },
+    {
+      "value": 748,
+      "currency_hint": "USD",
+      "raw_text": "$748",
+      "dom_context": "span.a8jt5op | $748 for 5 nights"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.c965t3n | Superhost\nSuperhost\nLenoir, North Carolina\nWild Side : Romantic-Secluded-Luxury Blowing Rock\n481 miles away\n481 miles aw"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.cfutgp0 | Superhost\nSuperhost\nLenoir, North Carolina\nWild Side : Romantic-Secluded-Luxury Blowing Rock\n481 miles away\n481 miles aw"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div | Superhost\nSuperhost\nLenoir, North Carolina\nWild Side : Romantic-Secluded-Luxury Blowing Rock\n481 miles away\n481 miles aw"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.lxq01kf | Superhost\nSuperhost\nLenoir, North Carolina\nWild Side : Romantic-Secluded-Luxury Blowing Rock\n481 miles away\n481 miles aw"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.g1qv1ctd | Lenoir, North Carolina\nWild Side : Romantic-Secluded-Luxury Blowing Rock\n481 miles away\n481 miles away\nMay 10 – 15\nMay 1"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.pi11895 | $1,455\nShow price breakdown\n \nfor 5 nights\n$1,455 for 5 nights"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.c1irrjfm | $1,455\nShow price breakdown\n \nfor 5 nights\n$1,455 for 5 nights"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.c1eou9fr | $1,455\nShow price breakdown\n \nfor 5 nights\n$1,455 for 5 nights"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "span.p1dgw2qm | $1,455\nShow price breakdown\n \nfor 5 nights\n$1,455 for 5 nights"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.c1y3vocb | $1,455\nShow price breakdown"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "div.touu2u1 | $1,455\nShow price breakdown"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "span.u174bpcy | $1,455"
+    },
+    {
+      "value": 1455,
+      "currency_hint": "USD",
+      "raw_text": "$1,455",
+      "dom_context": "span.a8jt5op | $1,455 for 5 nights"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.c965t3n | Superhost\nSuperhost\nWest Union, Ohio\nSerenity Now\n483 miles away\n483 miles away\nMay 5 – 10\nMay 5 – 10\n$571\nShow price br"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.cfutgp0 | Superhost\nSuperhost\nWest Union, Ohio\nSerenity Now\n483 miles away\n483 miles away\nMay 5 – 10\nMay 5 – 10\n$571\nShow price br"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div | Superhost\nSuperhost\nWest Union, Ohio\nSerenity Now\n483 miles away\n483 miles away\nMay 5 – 10\nMay 5 – 10\n$571\nShow price br"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.lxq01kf | Superhost\nSuperhost\nWest Union, Ohio\nSerenity Now\n483 miles away\n483 miles away\nMay 5 – 10\nMay 5 – 10\n$571\nShow price br"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.g1qv1ctd | West Union, Ohio\nSerenity Now\n483 miles away\n483 miles away\nMay 5 – 10\nMay 5 – 10\n$571\nShow price breakdown\n \nfor 5 nigh"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.pi11895 | $571\nShow price breakdown\n \nfor 5 nights\n$571 for 5 nights"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.c1irrjfm | $571\nShow price breakdown\n \nfor 5 nights\n$571 for 5 nights"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.c1eou9fr | $571\nShow price breakdown\n \nfor 5 nights\n$571 for 5 nights"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "span.p1dgw2qm | $571\nShow price breakdown\n \nfor 5 nights\n$571 for 5 nights"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.c1y3vocb | $571\nShow price breakdown"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "div.touu2u1 | $571\nShow price breakdown"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "span.u174bpcy | $571"
+    },
+    {
+      "value": 571,
+      "currency_hint": "USD",
+      "raw_text": "$571",
+      "dom_context": "span.a8jt5op | $571 for 5 nights"
+    },
+    {
+      "value": 1025,
+      "currency_hint": "USD",
+      "raw_text": "$1,025",
+      "dom_context": "div.c965t3n | Superhost\nSuperhost\nMountain View, Arkansas\nBlack Bear Bluff Cabin and Bunkhouse\n995 miles away\n995 miles away\nMay 3 – 8"
+    },
+    {
+      "value": 1025,
+      "currency_hint": "USD",
+      "raw_text": "$1,025",
+      "dom_context": "div.cfutgp0 | Superhost\nSuperhost\nMountain View, Arkansas\nBlack Bear Bluff Cabin and Bunkhouse\n995 miles away\n995 miles away\nMay 3 – 8"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "homepage_or_content",
+  "click_depth": 1,
+  "path_taken": [
+    "https://www.airbnb.com/s/homes",
+    "https://www.airbnb.com/s/homes"
+  ],
+  "selectors_clicked": [
+    "link:Book:"
+  ],
+  "pricing_state_confidence": 0.7,
+  "likely_price_page_type_detected": "other",
+  "price_found": true,
+  "fee_candidates": [],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "strong_pricing_state",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.airbnb.com/s/homes",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 40,
+      "pricing_state_confidence": 0.7,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    },
+    {
+      "depth": 1,
+      "url": "https://www.airbnb.com/s/homes",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 40,
+      "pricing_state_confidence": 0.7,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "iphone_mobile",
+  "account_state": "returning",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}

@@ -5,8 +5,10 @@ disclosure_analyzer.py — Offline analysis of algorithmic/personalized pricing 
 Methodological limitations (read before interpreting scores):
 - Static HTML/CSS snapshots cannot reliably reproduce rendered pixel placement, stacking,
   responsive breakpoints, or dynamic content shown only after interaction.
-- Screenshots without manual bounding boxes cannot locate disclosure text deterministically;
-  this script does not use OCR unless explicitly enabled (default: off).
+- Screenshots without manual bounding boxes cannot locate disclosure text deterministically.
+  Bounding boxes in annotations use [x1, x2, y1, y2] (see BOX_FORMAT constant), converted internally
+  to (x, y, width, height). This script never runs OCR unless a future OCR path is wired in
+  (default: dimensions, boxes, optional pixel luminance sampling, annotated output only).
 - Live browser measurement (getBoundingClientRect, getComputedStyle) would be more accurate
   when pages are accessible; this tool is designed for offline captured evidence.
 
@@ -20,6 +22,7 @@ import csv
 import json
 import math
 import re
+import warnings
 from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -45,6 +48,23 @@ try:
     from PIL import Image, ImageDraw
 except ImportError:
     Image = ImageDraw = None  # type: ignore
+
+# Bounding-box coordinate order for all annotation array boxes loaded from JSON.
+# Format [x1, x2, y1, y2] → internal rectangle (x=x1, y=y1, width=x2−x1, height=y2−y1).
+BOX_FORMAT = "x1_x2_y1_y2"
+
+SCREENSHOT_BOX_KEYS: Tuple[str, ...] = (
+    "disclosure_box",
+    "required_sentence_box",
+    "total_price_box",
+    "total_row_box",
+    "primary_cta_box",
+    "summary_panel_box",
+    "legal_disclaimer_block_box",
+    "modal_box",
+)
+
+REQUIRED_SCREENSHOT_BOX_KEYS: Tuple[str, ...] = ("disclosure_box",)
 
 
 # ---------------------------------------------------------------------------
@@ -822,6 +842,380 @@ def extract_style_maps_for_disclosure(
 # Screenshot analysis (no OCR by default)
 # ---------------------------------------------------------------------------
 
+def normalize_box(
+    raw: Any,
+    field_name: str,
+    issues: Optional[List[str]] = None,
+) -> Optional[Tuple[int, int, int, int]]:
+    """
+    Convert annotation array to (x, y, width, height).
+
+    When BOX_FORMAT is x1_x2_y1_y2: [x1, x2, y1, y2] with x2>x1, y2>y1.
+    """
+    if raw is None:
+        return None
+    def _emit(msg: str) -> None:
+        if issues is not None:
+            issues.append(msg)
+        else:
+            warnings.warn(msg, UserWarning, stacklevel=2)
+
+    if not isinstance(raw, (list, tuple)) or len(raw) != 4:
+        msg = f"{field_name}: expected a 4-element array, got {type(raw).__name__!r}"
+        _emit(msg)
+        return None
+    try:
+        x1, x2, y1, y2 = (int(raw[0]), int(raw[1]), int(raw[2]), int(raw[3]))
+    except (TypeError, ValueError):
+        msg = f"{field_name}: non-numeric box values {raw!r}"
+        _emit(msg)
+        return None
+
+    if BOX_FORMAT == "x1_x2_y1_y2":
+        x, y = x1, y1
+        width, height = x2 - x1, y2 - y1
+    else:
+        raise ValueError(f"Unsupported BOX_FORMAT {BOX_FORMAT!r}")
+
+    invalid_reason: Optional[str] = None
+    if x2 <= x1:
+        invalid_reason = f"{field_name}: x2 ({x2}) <= x1 ({x1})"
+    elif y2 <= y1:
+        invalid_reason = f"{field_name}: y2 ({y2}) <= y1 ({y1})"
+    elif width <= 0:
+        invalid_reason = f"{field_name}: width ({width}) <= 0"
+    elif height <= 0:
+        invalid_reason = f"{field_name}: height ({height}) <= 0"
+
+    if invalid_reason:
+        _emit(invalid_reason)
+        return None
+
+    return (x, y, width, height)
+
+
+def _looks_like_capture_entry(v: Any) -> bool:
+    if not isinstance(v, dict):
+        return False
+    return any(k in v for k in ("boxes", "files", "workflow", "screenshot"))
+
+
+def normalize_captures_dictionary(
+    raw: Any,
+    source_label: str,
+) -> Tuple[Dict[str, Any], List[str]]:
+    """
+    Expects { "captures": { key: entry, ... }, ... } with optional stray capture
+    entries duplicated at the top level; merges them into captures with warnings.
+    """
+    merge_notes: List[str] = []
+    if not isinstance(raw, dict):
+        return {}, [f"{source_label}: annotation root is not an object; ignoring"]
+    inner = raw.get("captures")
+    captures: Dict[str, Any] = {}
+    if isinstance(inner, dict):
+        captures = dict(inner)
+    for key, val in raw.items():
+        if key == "captures":
+            continue
+        if not _looks_like_capture_entry(val):
+            continue
+        if key in captures:
+            merge_notes.append(
+                f"{source_label}: duplicate capture key {key!r} at top level and under "
+                '"captures"; keeping the nested "captures" entry.'
+            )
+            continue
+        merge_notes.append(
+            f'{source_label}: capture {key!r} was outside "captures"; merged into captures. '
+            'Consider nesting it under "captures" for consistency.'
+        )
+        captures[key] = val
+    return captures, merge_notes
+
+
+def resolve_screenshot_path(
+    txt_path: Path,
+    ann_entry: Optional[Dict[str, Any]],
+    annotations_file: Optional[Path],
+) -> Tuple[Path, str]:
+    """
+    Prefer files.screenshot from annotations; else same-basename image next to .txt.
+    Returns (path to try, resolved path string for reporting).
+    """
+    rel: Optional[str] = None
+    if isinstance(ann_entry, dict):
+        files_obj = ann_entry.get("files")
+        if isinstance(files_obj, dict):
+            s = files_obj.get("screenshot")
+            if isinstance(s, str) and s.strip():
+                rel = s.strip()
+
+    bases: List[Path] = []
+    if annotations_file is not None:
+        bases.append(annotations_file.parent)
+    bases.append(Path.cwd())
+    bases.append(txt_path.parent)
+    bases.append(txt_path.parent.parent)
+
+    if rel:
+        p = Path(rel)
+        for base in bases:
+            cand = (base / p).resolve()
+            if cand.is_file():
+                return cand, cand.as_posix()
+
+    for ext in (".png", ".jpg", ".jpeg", ".webp"):
+        cand = txt_path.with_suffix(ext)
+        if cand.is_file():
+            return cand.resolve(), cand.resolve().as_posix()
+
+    if rel:
+        trial = (bases[0] / Path(rel)).resolve() if bases else Path(rel)
+        return trial, trial.as_posix()
+
+    missing = txt_path.with_suffix(".png")
+    return missing, missing.as_posix()
+
+
+def normalize_annotation_boxes(
+    boxes_obj: Any,
+    issues: List[str],
+) -> Tuple[Dict[str, Tuple[int, int, int, int]], List[str], List[str]]:
+    """
+    Normalize all known box keys. Returns (rects keyed by same name as JSON,
+    invalid field messages, missing field names).
+    """
+    rects: Dict[str, Tuple[int, int, int, int]] = {}
+    invalid: List[str] = []
+    missing: List[str] = []
+
+    if boxes_obj is None:
+        return rects, invalid, list(SCREENSHOT_BOX_KEYS)
+
+    if not isinstance(boxes_obj, dict):
+        issues.append("boxes: expected an object")
+        return rects, ["boxes: not an object"], list(SCREENSHOT_BOX_KEYS)
+
+    for key in SCREENSHOT_BOX_KEYS:
+        if key not in boxes_obj:
+            missing.append(key)
+            continue
+        raw_val = boxes_obj[key]
+        if raw_val is None:
+            if key in REQUIRED_SCREENSHOT_BOX_KEYS:
+                missing.append(key)
+            continue
+        sub: List[str] = []
+        tup = normalize_box(raw_val, key, sub)
+        if tup is not None:
+            rects[key] = tup
+        else:
+            invalid.extend(sub)
+    return rects, invalid, missing
+
+
+def annotation_manual_colors_present(colors_obj: Any) -> bool:
+    if not isinstance(colors_obj, dict):
+        return False
+    for k, v in colors_obj.items():
+        if not k.endswith("_rgb"):
+            continue
+        if isinstance(v, (list, tuple)) and len(v) >= 3:
+            return True
+    return False
+
+
+def annotation_workflow_present(ann_entry: Optional[Dict[str, Any]]) -> bool:
+    return isinstance(ann_entry, dict) and isinstance(ann_entry.get("workflow"), dict)
+
+
+def wcag_from_annotation_colors(colors: Any) -> Optional[float]:
+    """Exact-channel contrast from manual disclosure text/background RGB tuples."""
+    if not isinstance(colors, dict):
+        return None
+    fg = colors.get("disclosure_text_rgb")
+    bg = colors.get("disclosure_background_rgb")
+    if not (
+        isinstance(fg, (list, tuple))
+        and isinstance(bg, (list, tuple))
+        and len(fg) >= 3
+        and len(bg) >= 3
+    ):
+        return None
+    try:
+        fr, fg_, fb = float(fg[0]), float(fg[1]), float(fg[2])
+        br, bg_, bb = float(bg[0]), float(bg[1]), float(bg[2])
+        return contrast_ratio((fr, fg_, fb), (br, bg_, bb))
+    except (TypeError, ValueError):
+        return None
+
+
+def visual_placement_confidence(
+    screenshot_loaded: bool,
+    disclosure_rect: Optional[Tuple[int, int, int, int]],
+    total_rect: Optional[Tuple[int, int, int, int]],
+    cta_rect: Optional[Tuple[int, int, int, int]],
+    summary_rect: Optional[Tuple[int, int, int, int]],
+    legal_rect: Optional[Tuple[int, int, int, int]],
+    modal_rect: Optional[Tuple[int, int, int, int]],
+    colors_present: bool,
+) -> Tuple[float, float]:
+    """Return (visual_confidence, placement_confidence) in [0, 1]."""
+    vis = 0.0
+    pl = 0.0
+
+    if screenshot_loaded:
+        vis += 0.45
+        pl += 0.2
+    if disclosure_rect is not None:
+        vis += 0.35
+        pl += 0.25
+        if colors_present:
+            vis = min(1.0, vis + 0.2)
+
+        usable_total = total_rect is not None
+        usable_cta = cta_rect is not None
+        if usable_total:
+            pl += 0.2
+        if usable_cta:
+            pl += 0.2
+        if any(r is not None for r in (summary_rect, legal_rect, modal_rect)):
+            pl += 0.1
+        elif not usable_total and not usable_cta:
+            pl *= 0.65
+    elif colors_present:
+        vis = min(1.0, vis + 0.1)
+
+    if not screenshot_loaded:
+        pl *= 0.4
+
+    return round(min(1.0, vis), 4), round(min(1.0, pl), 4)
+
+
+@dataclass
+class ScreenshotAnnotationContext:
+    """Resolved screenshot paths, PIL image handle, normalized boxes for one capture."""
+
+    capture_key: str
+    txt_path: Path
+    ann_entry: Optional[Dict[str, Any]]
+    screenshot_path: Path
+    screenshot_path_display: str
+    screenshot_loaded: bool
+    screenshot_width: Optional[int]
+    screenshot_height: Optional[int]
+    fold_y_px: Optional[int]
+    rects: Dict[str, Tuple[int, int, int, int]]
+    invalid_boxes: List[str]
+    missing_boxes: List[str]
+    colors_present: bool
+    workflow_present: bool
+    annotation_found: bool
+    image: Any = None  # PIL image when loaded
+
+
+def load_screenshot_annotation_context(
+    capture_key: str,
+    txt_path: Path,
+    ann_entry: Optional[Dict[str, Any]],
+    annotations_file: Optional[Path],
+    merge_notes: Optional[List[str]] = None,
+) -> Tuple[ScreenshotAnnotationContext, Dict[str, Any]]:
+    """
+    Build runtime context plus a validation-report dict for this capture.
+
+    OCR is never used here; Pillow is optional (dims require a readable image).
+    """
+    notes = list(merge_notes or [])
+    screenshot_path_obj, screenshot_path_reported = resolve_screenshot_path(
+        txt_path,
+        ann_entry,
+        annotations_file,
+    )
+    screenshot_exists = screenshot_path_obj.exists()
+    img = load_image_safe(screenshot_path_obj) if screenshot_exists else None
+    screenshot_loaded = img is not None
+    shot_w = img.size[0] if img is not None else None
+    shot_h = img.size[1] if img is not None else None
+
+    issues: List[str] = notes[:]
+    boxes_obj = ann_entry.get("boxes") if isinstance(ann_entry, dict) else None
+    rects, invalid_box_msgs, missing_box_keys = normalize_annotation_boxes(boxes_obj, issues)
+    boxes_normalized_report = {
+        k: {"x": v[0], "y": v[1], "width": v[2], "height": v[3]} for k, v in rects.items()
+    }
+
+    fold_y_px: Optional[int] = None
+    if isinstance(ann_entry, dict):
+        ss_meta = ann_entry.get("screenshot")
+        if isinstance(ss_meta, dict) and ss_meta.get("fold_y_px") is not None:
+            try:
+                fold_y_px = int(ss_meta["fold_y_px"])
+            except (TypeError, ValueError):
+                fold_y_px = None
+
+    colors_obj = ann_entry.get("colors") if isinstance(ann_entry, dict) else None
+
+    validation_dict: Dict[str, Any] = {
+        "capture_key": capture_key,
+        "text_path": txt_path.as_posix(),
+        "annotation_found": isinstance(ann_entry, dict),
+        "merge_notes": notes,
+        "issues": issues + list(invalid_box_msgs),
+        "screenshot_path_configured": bool(
+            isinstance(ann_entry, dict)
+            and isinstance(ann_entry.get("files"), dict)
+            and ann_entry["files"].get("screenshot")
+        ),
+        "screenshot_path_resolved": screenshot_path_reported,
+        "screenshot_path_exists": screenshot_exists,
+        "screenshot_loaded": screenshot_loaded,
+        "screenshot_width_px": shot_w,
+        "screenshot_height_px": shot_h,
+        "fold_y_px_annotation": fold_y_px,
+        "box_format_expected": BOX_FORMAT,
+        "normalized_boxes": boxes_normalized_report,
+        "invalid_boxes_detail": invalid_box_msgs,
+        "missing_box_keys": missing_box_keys,
+        "manual_rgb_present": annotation_manual_colors_present(colors_obj),
+        "workflow_present": annotation_workflow_present(ann_entry),
+    }
+
+    ctx = ScreenshotAnnotationContext(
+        capture_key=capture_key,
+        txt_path=txt_path,
+        ann_entry=ann_entry,
+        screenshot_path=screenshot_path_obj,
+        screenshot_path_display=screenshot_path_reported,
+        screenshot_loaded=screenshot_loaded,
+        screenshot_width=shot_w,
+        screenshot_height=shot_h,
+        fold_y_px=fold_y_px,
+        rects=rects,
+        invalid_boxes=invalid_box_msgs,
+        missing_boxes=missing_box_keys,
+        colors_present=annotation_manual_colors_present(colors_obj),
+        workflow_present=annotation_workflow_present(ann_entry),
+        annotation_found=isinstance(ann_entry, dict),
+        image=img,
+    )
+    return ctx, validation_dict
+
+
+def build_capture_validation_report(
+    capture_key: str,
+    txt_path: Path,
+    ann_entry: Optional[Dict[str, Any]],
+    annotations_file: Optional[Path],
+    merge_notes: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    _, vd = load_screenshot_annotation_context(
+        capture_key, txt_path, ann_entry, annotations_file, merge_notes
+    )
+    return vd
+
+
 def load_image_safe(path: Path):
     if Image is None:
         return None
@@ -1016,12 +1410,15 @@ def build_notes_auto(row: Dict[str, Any]) -> str:
 def analyze_capture(
     txt_path: Path,
     _captures_dir: Path,
-    annotations: Dict[str, Any],
+    viz_ctx: ScreenshotAnnotationContext,
     enable_ocr: bool,
+    screenshot_pixel_stats: bool,
     write_annotated: bool,
     out_dir: Path,
 ) -> Dict[str, Any]:
-    del enable_ocr  # OCR explicitly off unless CLI enables (placeholder for future)
+    # OCR (--enable-ocr) is intentionally unused except as a CLI placeholder; screenshots are never
+    # text-extracted unless a future OCR implementation is wired in.
+    del enable_ocr
 
     raw = txt_path.read_text(encoding="utf-8", errors="replace")
     html_part, tail_css = split_html_and_tail(raw)
@@ -1141,28 +1538,41 @@ def analyze_capture(
         ),
     }
 
-    # Screenshot + annotations
-    cap_key = capture_key_from_path(txt_path)
-    img_path = txt_path.with_suffix(".png")
-    if not img_path.exists():
-        for ext in (".jpg", ".jpeg", ".webp"):
-            alt = txt_path.with_suffix(ext)
-            if alt.exists():
-                img_path = alt
-                break
+    ann_entry = viz_ctx.ann_entry if isinstance(viz_ctx.ann_entry, dict) else None
+    cap_key = viz_ctx.capture_key
 
-    shot_w = shot_h = None
-    ann_entry = annotations.get(cap_key) if isinstance(annotations, dict) else None
+    rects = viz_ctx.rects
+    shot_w = viz_ctx.screenshot_width
+    shot_h = viz_ctx.screenshot_height
+    img = viz_ctx.image
 
-    img = load_image_safe(img_path) if img_path.exists() else None
-    if img is not None:
-        shot_w, shot_h = img.size
+    dt = rects.get("disclosure_box")
+    tt = rects.get("total_price_box") or rects.get("total_row_box")
+    ct = rects.get("primary_cta_box")
+    st = rects.get("summary_panel_box")
+    legal_b = rects.get("legal_disclaimer_block_box")
+    mt = rects.get("modal_box")
 
-    # Defaults for screenshot metrics
-    null_placements = {
-        "screenshot_path": str(img_path.as_posix()) if img_path.exists() else None,
+    vis_conf, pl_conf = visual_placement_confidence(
+        viz_ctx.screenshot_loaded,
+        dt,
+        tt,
+        ct,
+        st,
+        legal_b,
+        mt,
+        viz_ctx.colors_present,
+    )
+
+    fold_y_eff: Optional[int] = None
+    if shot_h:
+        fold_y_eff = viz_ctx.fold_y_px if viz_ctx.fold_y_px is not None else int(shot_h * 0.5)
+
+    null_placements: Dict[str, Any] = {
+        "screenshot_path": viz_ctx.screenshot_path_display,
         "screenshot_width": shot_w,
         "screenshot_height": shot_h,
+        "fold_y_px_used": fold_y_eff,
         "disclosure_box_x": None,
         "disclosure_box_y": None,
         "disclosure_box_width": None,
@@ -1174,6 +1584,7 @@ def analyze_capture(
         "disclosure_below_total_screenshot": None,
         "disclosure_below_cta_screenshot": None,
         "disclosure_inside_summary_panel": None,
+        "disclosure_inside_legal_disclaimer_block": None,
         "disclosure_inside_modal_box": None,
         "distance_disclosure_to_total_px": None,
         "vertical_gap_disclosure_total_px": None,
@@ -1187,81 +1598,109 @@ def analyze_capture(
         "requires_login": None,
         "checkout_stage": None,
         "annotated_screenshot_path": None,
+        "box_format_used": BOX_FORMAT,
+        "screenshot_loaded": viz_ctx.screenshot_loaded,
+        "screenshot_path_resolved": viz_ctx.screenshot_path_display,
+        "annotation_found": viz_ctx.annotation_found,
+        "invalid_boxes": "; ".join(viz_ctx.invalid_boxes),
+        "missing_boxes": "; ".join(viz_ctx.missing_boxes),
+        "visual_metrics_confidence": vis_conf,
+        "placement_metrics_confidence": pl_conf,
+        "manual_rgb_values_present": viz_ctx.colors_present,
+        "workflow_metadata_present": viz_ctx.workflow_present,
+        "annotation_wcag_contrast_ratio": wcag_from_annotation_colors(
+            ann_entry.get("colors") if ann_entry else None
+        ),
     }
     row.update(null_placements)
 
-    if ann_entry and isinstance(ann_entry, dict):
-        boxes = ann_entry.get("boxes") or {}
-        manual = ann_entry.get("manual") or {}
-        if isinstance(boxes, dict):
-            dbox = boxes.get("disclosure")
-            tbox = boxes.get("total")
-            ctabox = boxes.get("primary_cta")
-            sumbox = boxes.get("summary_panel")
-            modalbox = boxes.get("modal")
+    if screenshot_pixel_stats:
+        lum = luminance_percentiles_crop(img, dt) if img is not None and dt is not None else None
+        if lum:
+            row["screenshot_disclosure_luminance_p10"] = lum["luminance_p10"]
+            row["screenshot_disclosure_luminance_p50"] = lum["luminance_p50"]
+            row["screenshot_disclosure_luminance_p90"] = lum["luminance_p90"]
 
-            def as_tuple(b):
-                if isinstance(b, (list, tuple)) and len(b) == 4:
-                    return int(b[0]), int(b[1]), int(b[2]), int(b[3])
-                return None
+    if dt is not None and shot_w and shot_h:
+        dx, dy, dw, dh = dt
+        area = dw * dh
+        share = area / float(shot_w * shot_h) if shot_w * shot_h else None
 
-            dt = as_tuple(dbox)
-            tt = as_tuple(tbox)
-            ct = as_tuple(ctabox)
-            st = as_tuple(sumbox)
-            mt = as_tuple(modalbox)
+        fully_above = None
+        if fold_y_eff is not None:
+            fully_above = dy >= 0 and dy + dh <= fold_y_eff
+        elif shot_h:
+            fully_above = False
 
-            if dt is not None and shot_w and shot_h:
-                dx, dy, dw, dh = dt
-                area = max(0, dw) * max(0, dh)
-                share = area / float(shot_w * shot_h) if shot_w * shot_h else None
-                fold_y = int(shot_h * 0.5) if shot_h else 0
-                fully_above = dy >= 0 and dy + dh <= fold_y if shot_h else None
+        row.update(
+            {
+                "disclosure_box_x": dx,
+                "disclosure_box_y": dy,
+                "disclosure_box_width": dw,
+                "disclosure_box_height": dh,
+                "disclosure_area_px": area,
+                "disclosure_area_share_of_viewport": share,
+                "disclosure_above_fold": (
+                    dy < fold_y_eff if fold_y_eff is not None and shot_h else None
+                ),
+                "disclosure_fully_above_fold": fully_above,
+            }
+        )
 
-                row.update(
-                    {
-                        "disclosure_box_x": dx,
-                        "disclosure_box_y": dy,
-                        "disclosure_box_width": dw,
-                        "disclosure_box_height": dh,
-                        "disclosure_area_px": area,
-                        "disclosure_area_share_of_viewport": share,
-                        "disclosure_above_fold": (dy < fold_y) if shot_h else None,
-                        "disclosure_fully_above_fold": fully_above,
-                    }
-                )
+        if tt is not None:
+            row["disclosure_below_total_screenshot"] = vertical_gap_below_upper(dt, tt) > 0
+            row["distance_disclosure_to_total_px"] = euclidean_center_distance(dt, tt)
+            row["vertical_gap_disclosure_total_px"] = vertical_gap_below_upper(dt, tt)
+        if ct is not None:
+            row["disclosure_below_cta_screenshot"] = vertical_gap_below_upper(dt, ct) > 0
+            row["distance_disclosure_to_cta_px"] = euclidean_center_distance(dt, ct)
+            row["vertical_gap_disclosure_cta_px"] = vertical_gap_below_upper(dt, ct)
+        if st is not None:
+            row["disclosure_inside_summary_panel"] = rect_contains(dt, st)
+        if legal_b is not None:
+            row["disclosure_inside_legal_disclaimer_block"] = rect_contains(dt, legal_b)
+        if mt is not None:
+            row["disclosure_inside_modal_box"] = rect_contains(dt, mt)
+            marea = mt[2] * mt[3]
+            row["modal_area_share_of_viewport"] = marea / float(shot_w * shot_h)
 
-                if tt is not None:
-                    row["disclosure_below_total_screenshot"] = dt[1] > tt[1] + tt[3] - 1
-                    row["distance_disclosure_to_total_px"] = euclidean_center_distance(dt, tt)
-                    row["vertical_gap_disclosure_total_px"] = vertical_gap_below_upper(dt, tt)
-                if ct is not None:
-                    row["disclosure_below_cta_screenshot"] = dt[1] > ct[1] + ct[3] - 1
-                    row["distance_disclosure_to_cta_px"] = euclidean_center_distance(dt, ct)
-                    row["vertical_gap_disclosure_cta_px"] = vertical_gap_below_upper(dt, ct)
-                if st is not None:
-                    row["disclosure_inside_summary_panel"] = rect_contains(dt, st)
-                if mt is not None:
-                    row["disclosure_inside_modal_box"] = rect_contains(dt, mt)
-                    if shot_w and shot_h:
-                        marea = max(0, mt[2]) * max(0, mt[3])
-                        row["modal_area_share_of_viewport"] = marea / float(shot_w * shot_h)
+    if write_annotated and img is not None and rects:
+        draw_map: Dict[str, List[int]] = {}
+        label_by_key = {
+            "disclosure_box": "disclosure",
+            "total_price_box": "total",
+            "primary_cta_box": "primary_cta",
+            "summary_panel_box": "summary_panel",
+            "modal_box": "modal",
+            "legal_disclaimer_block_box": "legal_block",
+            "required_sentence_box": "required_sentence",
+            "total_row_box": "total_row",
+        }
+        for bk, tup in rects.items():
+            lbl = label_by_key.get(bk, bk.replace("_box", ""))
+            draw_map[lbl] = list(tup)
+        annotated_path = out_dir / f"annotated_{cap_key}.png"
+        draw_annotated_screenshot(img, draw_map, annotated_path)
+        row["annotated_screenshot_path"] = str(annotated_path.as_posix())
 
-                lum = luminance_percentiles_crop(img, dt) if img is not None else None
-                if lum:
-                    row["screenshot_disclosure_luminance_p10"] = lum["luminance_p10"]
-                    row["screenshot_disclosure_luminance_p50"] = lum["luminance_p50"]
-                    row["screenshot_disclosure_luminance_p90"] = lum["luminance_p90"]
+    if isinstance(ann_entry, dict):
+        wf = ann_entry.get("workflow")
+        if isinstance(wf, dict):
+            row["clicks_to_visible"] = wf.get("clicks_to_visible_disclosure")
+            row["requires_login"] = wf.get("requires_login")
+            stage = wf.get("capture_stage")
+            row["checkout_stage"] = stage
+        legacy = ann_entry.get("manual")
+        if isinstance(legacy, dict):
+            row["clicks_to_visible"] = row.get("clicks_to_visible") or legacy.get(
+                "clicks_to_visible"
+            )
+            row["requires_login"] = row.get("requires_login") or legacy.get("requires_login")
+            row["checkout_stage"] = row.get("checkout_stage") or legacy.get("checkout_stage")
 
-            if write_annotated and img is not None and isinstance(boxes, dict):
-                annotated_path = out_dir / f"annotated_{cap_key}.png"
-                draw_annotated_screenshot(img, boxes, annotated_path)
-                row["annotated_screenshot_path"] = str(annotated_path.as_posix())
-
-        if isinstance(manual, dict):
-            row["clicks_to_visible"] = manual.get("clicks_to_visible")
-            row["requires_login"] = manual.get("requires_login")
-            row["checkout_stage"] = manual.get("checkout_stage")
+    # Prefer manual RGB contrast when HTML-derived contrast absent
+    if row.get("wcag_contrast_ratio") is None and row.get("annotation_wcag_contrast_ratio"):
+        row["wcag_contrast_ratio"] = row["annotation_wcag_contrast_ratio"]
 
     # Scores
     row["prominence_score_0_to_10"] = score_prominence_0_10(row)
@@ -1278,13 +1717,15 @@ def analyze_capture(
     return row
 
 
-def load_annotations(path: Optional[Path]) -> Dict[str, Any]:
+def load_normalized_captures(path: Optional[Path]) -> Tuple[Dict[str, Any], List[str]]:
+    """Parse annotations JSON into a capture-keyed dict; merge misplaced top-level captures."""
     if not path or not path.exists():
-        return {}
+        return {}, []
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        raw = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
-        return {}
+        return {}, [f"{path}: JSON parse failed; annotations skipped"]
+    return normalize_captures_dictionary(raw, str(path))
 
 
 def main() -> None:
@@ -1305,6 +1746,12 @@ def main() -> None:
         help="Reserved for future OCR-based analysis (disabled in this version).",
     )
     parser.add_argument(
+        "--enable-screenshot-pixel-stats",
+        action="store_true",
+        help="Compute luminance percentiles inside the disclosure box from pixels "
+        "(not OCR). Default matches manual-box-only screenshot use.",
+    )
+    parser.add_argument(
         "--no-annotated-screenshots",
         action="store_true",
         help="Do not write annotated screenshot copies.",
@@ -1318,20 +1765,64 @@ def main() -> None:
     out_dir = args.out.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    ann_path = args.annotations
-    if not ann_path.is_absolute():
-        ann_path = Path.cwd() / ann_path
-    annotations = load_annotations(ann_path if ann_path.exists() else None)
+    ann_path_arg = args.annotations
+    ann_path_abs = Path(ann_path_arg)
+    if not ann_path_abs.is_absolute():
+        ann_path_abs = (Path.cwd() / ann_path_abs).resolve()
+
+    annotations_file = ann_path_abs if ann_path_abs.exists() else None
+    captures_ann, annotation_merge_warnings = load_normalized_captures(annotations_file)
+    for w in annotation_merge_warnings:
+        print(w)
 
     txt_files = sorted(captures_dir.glob("*.txt"))
+    validation_report: List[Dict[str, Any]] = []
+
+    viz_by_txt: Dict[Path, ScreenshotAnnotationContext] = {}
+    for txt in txt_files:
+        txt_r = txt.resolve()
+        cap_key = capture_key_from_path(txt_r)
+        ann_entry = captures_ann.get(cap_key)
+        viz_ctx, vdict = load_screenshot_annotation_context(
+            cap_key,
+            txt_r,
+            ann_entry,
+            annotations_file,
+            merge_notes=None,
+        )
+        viz_by_txt[txt_r] = viz_ctx
+        validation_report.append(vdict)
+
+    val_path = out_dir / "validation_report.json"
+    val_path.write_text(json.dumps(validation_report, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"Wrote validation report: {val_path}")
+    print("--- Annotation / screenshot validation (summary) ---")
+    for vr in validation_report:
+        nk = vr.get("capture_key", "?")
+        loaded = vr.get("screenshot_loaded")
+        dims = (
+            f"{vr.get('screenshot_width_px')}×{vr.get('screenshot_height_px')}"
+            if vr.get("screenshot_loaded")
+            else "n/a"
+        )
+        ib = vr.get("invalid_boxes_detail") or []
+        mb = vr.get("missing_box_keys") or []
+        print(
+            f"  [{nk}] path={vr.get('screenshot_path_resolved')} exists={vr.get('screenshot_path_exists')} "
+            f"loaded={loaded} dims={dims} invalid={len(ib)} missing={len(mb)} "
+            f"rgb={vr.get('manual_rgb_present')} workflow={vr.get('workflow_present')}",
+        )
+
     rows: List[Dict[str, Any]] = []
     for txt in txt_files:
+        txt_r = txt.resolve()
         rows.append(
             analyze_capture(
-                txt,
+                txt_r,
                 captures_dir,
-                annotations,
+                viz_ctx=viz_by_txt[txt_r],
                 enable_ocr=args.enable_ocr,
+                screenshot_pixel_stats=args.enable_screenshot_pixel_stats,
                 write_annotated=not args.no_annotated_screenshots,
                 out_dir=out_dir,
             )

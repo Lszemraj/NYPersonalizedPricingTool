@@ -1,0 +1,27 @@
+normalized_url,platform_name,personas_compared,n_personas,disclosure_present_diff,visibility_diff,clicks_diff,placement_diff,price_diff,pricing_state_confidence_diff
+https://seatgeek.com,seatgeek,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.airbnb.com,airbnb,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,True
+https://www.airbnb.com/s/homes,airbnb,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.amazon.com,amazon,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.amazon.com/s,amazon,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.booking.com,booking.com,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.booking.com/searchresults.html,booking.com,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.doordash.com,doordash,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.doordash.com/restaurants-near-me,doordash,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.expedia.com,expedia,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.expedia.com/Hotel-Search,expedia,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.google.com/travel/flights,google flights,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.grubhub.com,grubhub,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,True
+https://www.instacart.com,instacart,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.instacart.com/store,instacart,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.stubhub.com,stubhub,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.target.com,target,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.target.com/s,target,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.ticketmaster.com,ticketmaster,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,True
+https://www.ticketmaster.com/discover/concerts,ticketmaster,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,True
+https://www.ubereats.com,uber eats,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.ubereats.com/feed,uber eats,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.united.com,united airlines,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.united.com/en/us/flight-search,united airlines,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.walmart.com,walmart,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False
+https://www.walmart.com/search,walmart,android_brooklyn_high_activity|desktop_nyc_city_hall_fresh|iphone_long_island_city_returning,3,False,False,False,False,False,False

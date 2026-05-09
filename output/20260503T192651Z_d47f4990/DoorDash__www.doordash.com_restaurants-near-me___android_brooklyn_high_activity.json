@@ -1,0 +1,378 @@
+{
+  "run_id": "20260503T192651Z_d47f4990",
+  "timestamp": "2026-05-03T19:26:56.960382+00:00",
+  "url": "https://www.doordash.com/restaurants-near-me/",
+  "target_url": "https://www.doordash.com/restaurants-near-me/",
+  "platform_name": "DoorDash",
+  "category": "Food delivery",
+  "homepage_url": "https://www.doordash.com",
+  "pilot_priority": true,
+  "requires_login": false,
+  "likely_price_page_type": "menu | cart | checkout",
+  "platform_notes": "Address gate likely; cart/checkout for fee lines; SPA-heavy.",
+  "persona_name": "android_brooklyn_high_activity",
+  "disclosure_found_exact": false,
+  "disclosure_found_normalized": false,
+  "disclosure_visible": false,
+  "disclosure_font_size_px": null,
+  "disclosure_contrast_ratio": null,
+  "disclosure_clicks_required": 0,
+  "disclosure_position_relative_to_price": "unknown",
+  "disclosure_distance_from_top": null,
+  "disclosure_requires_scroll": false,
+  "disclosure_match_count": 0,
+  "top_price_text": "$0",
+  "num_price_candidates": 40,
+  "screenshot_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\DoorDash__www.doordash.com_restaurants-near-me___android_brooklyn_high_activity.png",
+  "html_path": "C:\\Users\\cmcke\\OneDrive\\Desktop\\COS\\COS 351\\NYPersonalizedPricingTool\\output\\20260503T192651Z_d47f4990\\DoorDash__www.doordash.com_restaurants-near-me___android_brooklyn_high_activity.html",
+  "json_path": null,
+  "error": null,
+  "prices": [
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div | Sahara Restaurant\n4.6\n(1k+)\n•\n3.6 mi\n•\n42 min\n$0 delivery fee\n$8 off on $55+\nPopular Items"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | Sahara Restaurant\n4.6\n(1k+)\n•\n3.6 mi\n•\n42 min\n$0 delivery fee\n$8 off on $55+"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.sc-df083263-2 | Sahara Restaurant\n4.6\n(1k+)\n•\n3.6 mi\n•\n42 min\n$0 delivery fee\n$8 off on $55+"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div#store-info-141911 | Sahara Restaurant\n4.6\n(1k+)\n•\n3.6 mi\n•\n42 min\n$0 delivery fee\n$8 off on $55+"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.sc-df083263-14 | $0 delivery fee"
+    },
+    {
+      "value": 8,
+      "currency_hint": "USD",
+      "raw_text": "$8",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | $8 off on $55+"
+    },
+    {
+      "value": 8,
+      "currency_hint": "USD",
+      "raw_text": "$8",
+      "dom_context": "div.sc-614efdde-2 | $8 off on $55+"
+    },
+    {
+      "value": 8,
+      "currency_hint": "USD",
+      "raw_text": "$8",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $8 off on $55+"
+    },
+    {
+      "value": 8,
+      "currency_hint": "USD",
+      "raw_text": "$8",
+      "dom_context": "span.Text-sc-yxnz5n-0 | $8 off on $55+"
+    },
+    {
+      "value": 19.22,
+      "currency_hint": "USD",
+      "raw_text": "$19.22",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | Chicken Kebob (platter)Chicken breast marinated with garlic, lemon juice, and special spices, topped with tahini sauce.$"
+    },
+    {
+      "value": 19.22,
+      "currency_hint": "USD",
+      "raw_text": "$19.22",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $19.22"
+    },
+    {
+      "value": 19.27,
+      "currency_hint": "USD",
+      "raw_text": "$19.27",
+      "dom_context": "div.sc-bb269c1-1 | Gyro (platter)Mixed beef and lamb meat marinated with tasty spices, topped with tahini sauce.$19.27"
+    },
+    {
+      "value": 19.27,
+      "currency_hint": "USD",
+      "raw_text": "$19.27",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $19.27"
+    },
+    {
+      "value": 19.2,
+      "currency_hint": "USD",
+      "raw_text": "$19.20",
+      "dom_context": "div.sc-bb269c1-1 | Chicken Shawarma (platter)Rotisserie cooked marinated chicken, topped with tahini sauce.$19.20"
+    },
+    {
+      "value": 19.2,
+      "currency_hint": "USD",
+      "raw_text": "$19.20",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $19.20"
+    },
+    {
+      "value": 15.14,
+      "currency_hint": "USD",
+      "raw_text": "$15.14",
+      "dom_context": "div.sc-bb269c1-1 | Veggie Combination( Make your own)Pick 4 items or less (Hummus, Baba Ghanoug, Tabouleh, Falafel, Sting Beans, Mujaddara "
+    },
+    {
+      "value": 15.14,
+      "currency_hint": "USD",
+      "raw_text": "$15.14",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $15.14"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "div.sc-297d2f35-1 | Joe's Italian Deli & Restaurant\n4.8\n(3k+)\n•\n8.3 mi\n•\n50 min\n$0 delivery fee\nPopular Items"
+    },
+    {
+      "value": 0,
+      "currency_hint": "USD",
+      "raw_text": "$0",
+      "dom_context": "a.sc-db8c6f48-0 | Joe's Italian Deli & Restaurant\n4.8\n(3k+)\n•\n8.3 mi\n•\n50 min\n$0 delivery fee"
+    },
+    {
+      "value": 11.09,
+      "currency_hint": "USD",
+      "raw_text": "$11.09",
+      "dom_context": "div.sc-df083263-38 | JOES Chicken Cutlet NAPOLI  MOZZARELLA ROSTED PEPPERS oil balsamicWITH SPRING MIX AND BALSAMIC glaze$11.09 Chicken Parme"
+    },
+    {
+      "value": 11.09,
+      "currency_hint": "USD",
+      "raw_text": "$11.09",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | JOES Chicken Cutlet NAPOLI  MOZZARELLA ROSTED PEPPERS oil balsamicWITH SPRING MIX AND BALSAMIC glaze$11.09"
+    },
+    {
+      "value": 11.09,
+      "currency_hint": "USD",
+      "raw_text": "$11.09",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $11.09"
+    },
+    {
+      "value": 10.64,
+      "currency_hint": "USD",
+      "raw_text": "$10.64",
+      "dom_context": "div.sc-bb269c1-1 | Chicken ParmesanoSERVED WITH BASIL TOMATO SAUCE$10.64"
+    },
+    {
+      "value": 10.64,
+      "currency_hint": "USD",
+      "raw_text": "$10.64",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $10.64"
+    },
+    {
+      "value": 5.9,
+      "currency_hint": "USD",
+      "raw_text": "$5.90",
+      "dom_context": "div.sc-bb269c1-1 | Garlic Bread with Mozzarella CheeseA crisp, refreshing taste you know and love with zero calories.$5.90"
+    },
+    {
+      "value": 5.9,
+      "currency_hint": "USD",
+      "raw_text": "$5.90",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $5.90"
+    },
+    {
+      "value": 15.11,
+      "currency_hint": "USD",
+      "raw_text": "$15.11",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | Nashville Chicken loaded friesOur signature fried chicken, masala fries, cheese sauce, Chaska sauce, Jalapenos$15.11"
+    },
+    {
+      "value": 15.11,
+      "currency_hint": "USD",
+      "raw_text": "$15.11",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $15.11"
+    },
+    {
+      "value": 13.69,
+      "currency_hint": "USD",
+      "raw_text": "$13.69",
+      "dom_context": "div.sc-bb269c1-1 | Nashville Hot Chicken SandoChipotle aioli, coleslaw, dill pickles, and Nashville spices$13.69"
+    },
+    {
+      "value": 13.69,
+      "currency_hint": "USD",
+      "raw_text": "$13.69",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $13.69"
+    },
+    {
+      "value": 13.67,
+      "currency_hint": "USD",
+      "raw_text": "$13.67",
+      "dom_context": "div.sc-bb269c1-1 | Jalapeno Wagyu Smash BurgerDouble patty with diced onions, cheese, lettuce, Sauteed Jalapeno, smash sauce$13.67"
+    },
+    {
+      "value": 13.67,
+      "currency_hint": "USD",
+      "raw_text": "$13.67",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $13.67"
+    },
+    {
+      "value": 15.03,
+      "currency_hint": "USD",
+      "raw_text": "$15.03",
+      "dom_context": "div.sc-bb269c1-1 | Hot Chicken loaded MacOur signature Nashville hot chicken, mac and cheese, cheese sauce, Chaska sauce, Jalapenos$15.03"
+    },
+    {
+      "value": 15.03,
+      "currency_hint": "USD",
+      "raw_text": "$15.03",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $15.03"
+    },
+    {
+      "value": 24.05,
+      "currency_hint": "USD",
+      "raw_text": "$24.05",
+      "dom_context": "div.StyledStackChildren-sc-1cimee4-0 | Penne Vodka with ChickenHouse made vodka sauce with spiced grilled chicken$24.05"
+    },
+    {
+      "value": 24.05,
+      "currency_hint": "USD",
+      "raw_text": "$24.05",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $24.05"
+    },
+    {
+      "value": 19.61,
+      "currency_hint": "USD",
+      "raw_text": "$19.61",
+      "dom_context": "div.sc-bb269c1-1 | Triple T's CheeseburgerFreshly ground 10oz burger, topped with melted cheddar, tomato, red onions & lettuce on a toasted"
+    },
+    {
+      "value": 19.61,
+      "currency_hint": "USD",
+      "raw_text": "$19.61",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $19.61"
+    },
+    {
+      "value": 19.39,
+      "currency_hint": "USD",
+      "raw_text": "$19.39",
+      "dom_context": "div.sc-bb269c1-1 | Classic Caesar SaladRomaine, croutons & shaved grana padana with our housemade caesar dressing$19.39"
+    },
+    {
+      "value": 19.39,
+      "currency_hint": "USD",
+      "raw_text": "$19.39",
+      "dom_context": "div.StyledInlineChildren-sc-r2rlwm-0 | $19.39"
+    }
+  ],
+  "disclosure_found_near_match": false,
+  "page_stage": "homepage_or_content",
+  "click_depth": 0,
+  "path_taken": [
+    "https://www.doordash.com/restaurants-near-me/"
+  ],
+  "selectors_clicked": [],
+  "pricing_state_confidence": 1.0,
+  "likely_price_page_type_detected": "other",
+  "price_found": true,
+  "fee_candidates": [
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "farther away (+$2.99 fee)",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "farther away (+$2.99 fee)",
+    "$0 delivery fee",
+    "farther away (+$2.99 fee)",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "farther away (+$0.99 fee)",
+    "$0 delivery fee",
+    "$0 delivery fee",
+    "$0 delivery fee"
+  ],
+  "first_found_stage": null,
+  "first_found_click_depth": null,
+  "first_found_url": null,
+  "clicks_required_to_first_disclosure": null,
+  "scroll_depth_to_disclosure": null,
+  "found_in_modal": false,
+  "found_in_accordion": false,
+  "found_in_footer": false,
+  "blocked_by_login": false,
+  "blocked_by_address_gate": false,
+  "used_storage_state": false,
+  "used_test_address": false,
+  "stop_reason": "no_safe_candidates",
+  "exploration_stages": [
+    {
+      "depth": 0,
+      "url": "https://www.doordash.com/restaurants-near-me/",
+      "page_stage": "homepage_or_content",
+      "disclosure_exact": false,
+      "disclosure_normalized": false,
+      "disclosure_near": false,
+      "price_candidates_n": 40,
+      "pricing_state_confidence": 1.0,
+      "likely_price_page_type_detected": "other",
+      "gates": {
+        "login_wall": false,
+        "address_gate": false
+      }
+    }
+  ],
+  "persona_group": "android_mobile",
+  "account_state": "high_activity",
+  "screenshot_annotated_path": null,
+  "disclosure_font_weight": null,
+  "disclosure_font_size_ratio_vs_body": null,
+  "disclosure_line_height_px": null,
+  "disclosure_distance_px_from_price": null,
+  "disclosure_placement_surface": null,
+  "disclosure_alongside_price_visual_group": null,
+  "disclosure_max_z_index": null,
+  "disclosure_visually_obscured": false,
+  "disclosure_visible_without_interaction": null,
+  "disclosure_on_separate_visual_surface": false,
+  "research_timing_first_disclosure": null,
+  "interactions_before_first_disclosure": null,
+  "normalized_price_value": null,
+  "currency_code": "USD",
+  "pricing_base_price_value": null,
+  "pricing_total_price_value": null,
+  "pricing_cart_total_candidate": null,
+  "pricing_fee_items": [],
+  "gating_flags": {
+    "blocked_by_login": false,
+    "blocked_by_address_gate": false,
+    "used_test_address": false,
+    "used_storage_state": false
+  },
+  "pricing_breakdown": {
+    "normalized_price_value": null,
+    "currency": "USD",
+    "base_price_value": null,
+    "total_price_value": null,
+    "cart_total_candidate": null,
+    "fee_items": [],
+    "primary_price_doc_rect": null
+  },
+  "disclosure": {
+    "found_exact": false,
+    "found_normalized": false,
+    "found_near_match": false,
+    "matched_text": null,
+    "number_of_matches": 0,
+    "best_candidate": null,
+    "all_candidates": []
+  }
+}
